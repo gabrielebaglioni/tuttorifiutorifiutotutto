@@ -1,0 +1,29 @@
+<div *ngIf="selectedItem$ | async as selectedItem">
+  <div class="mb-24 md:mb-4 w-full md:w-6/12 py-1">
+    <div class="image-container">
+      <ng-container [ngSwitch]="determineFileType(selectedItem.url)">
+        <video *ngSwitchCase="'video'" [src]="selectedItem.url" controls class="image"></video>
+        <audio *ngSwitchCase="'audio'" [src]="selectedItem.url" controls class="image"></audio>
+        <iframe *ngSwitchCase="'pdf'" [src]="selectedItem.url" class="image"></iframe>
+        <img *ngSwitchCase="'image'" [src]="selectedItem.url" [alt]="selectedItem.alt || 'Content'" class="image">
+        <p *ngSwitchDefault>Unsupported file type</p>
+      </ng-container>
+    </div>
+    <div class="item-info">
+      <div class="left-info">
+        <p>{{ (parentCatalog$ | async)?.name }}, {{ (parentCatalog$ | async)?.year }}</p>
+        <p>{{ (parentCatalog$ | async)?.category }}</p>
+      </div>
+      <div class="middle-info">
+        <p>{{ (parentCatalog$ | async)?.id }}</p>
+      </div>
+      <div class="right-info">
+        <p>1/{{ (parentCatalog$ | async)?.items!.length }}</p>
+      </div>
+      <div class="w-full max-w-md">
+        <p>Full branding for {{ (parentCatalog$ | async)?.name }}: a description here. <br>In collaboration with partners.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<app-variable-content *ngIf="!(selectedItem$ | async)"></app-variable-content>

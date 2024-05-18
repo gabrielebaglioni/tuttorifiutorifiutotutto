@@ -1,0 +1,8 @@
+.container{
+  min-height: calc(100vh - 87.56px);
+  max-width: 100% !important;
+}
+
+.container-mobile{
+  min-height: calc(100vh - 110px);
+}

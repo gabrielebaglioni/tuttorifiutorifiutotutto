@@ -1,0 +1,12 @@
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+a.title {
+  color: black;
+  margin-right:1rem;
+}
+.spacing{
+  padding-left: 5px;
+  padding-right: 10px;
+}

@@ -1,0 +1,15 @@
+<div class="border-b border-solid border-low-opacity">
+  <button class="hover:opacity-80 flex flex-wrap w-full text text-left py-1 mb-0 items-center" (click)="handleToggle()">
+    <div class="w-3/12">{{ item.id }}</div>
+    <div class="w-6/12 md:w-3/12">{{ item.name }}</div>
+    <div class="hidden md:block w-3/12">{{ item.category }}</div>
+    <div class="w-3/12 text-right">{{ item.year }}</div>
+  </button>
+  <ng-container *ngIf="isExpanded$ | async">
+    <div class="flex button-links w-full mt-2 mb-2">
+      <button class="button-link" *ngFor="let _item of item.items" (click)="handleItemClick(_item.id)">
+        <app-item-preview [item]="_item"></app-item-preview>
+      </button>
+    </div>
+  </ng-container>
+</div>

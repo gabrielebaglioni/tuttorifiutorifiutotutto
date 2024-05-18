@@ -1,0 +1,21 @@
+.logo{
+  max-width: 315px;
+}
+
+.foot{
+  padding-top: 24px;
+  padding-bottom: 17px;
+  height: 87.56px;
+  background-color: #ededed!important;
+  position: sticky;
+}
+
+.foot-mobile{
+  background-color: #ededed!important;
+  height: 110px;
+}
+
+.copyright{
+  color: #2E77C5;
+  font-style: italic;
+}

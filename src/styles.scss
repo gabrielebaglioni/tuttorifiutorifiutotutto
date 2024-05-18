@@ -1,0 +1,61 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* src/styles/reset.css */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 8px;
+  font-family: 'Roboto', sans-serif;
+
+}
+body {
+  @apply bg-gray-800 text-white;
+}
+
+@keyframes bg-color-animation {
+  0% { background-position: 0% 43%; }
+  50% { background-position: 100% 58%; }
+  100% { background-position: 0% 43%; }
+}
+
+body {
+  background: linear-gradient(291deg, #0e5f4a, #000201, #140307, #2a3367, #210e3a, #58311a, #135f4f, #3b1c5a, #021372);
+  background-size: 1800% 1800%;
+  animation: bg-color-animation 21s ease infinite;
+}
+
+.item-image {
+  height: 100px; /* Sostituisci con l'altezza desiderata */
+  max-width: 100%; /* Questo farà sì che l'immagine non superi la larghezza del suo contenitore */
+  object-fit: cover; /* Questo farà sì che l'immagine copra completamente l'area senza distorcere le proporzioni */
+}
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
