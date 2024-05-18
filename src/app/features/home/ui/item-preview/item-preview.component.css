@@ -5,3 +5,36 @@
   max-width: 100%;
   object-fit: cover;
 }
+
+.audio-element {
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: white !important;
+
+}
+
+.audio-element::-webkit-media-controls-panel,
+.audio-element::-webkit-media-controls-enclosure {
+  background-color: transparent !important;
+  color: white !important;
+
+}
+
+.audio-element::-webkit-media-controls-timeline,
+.audio-element::-webkit-media-controls-current-time-display,
+.audio-element::-webkit-media-controls-time-remaining-display,
+.audio-element::-webkit-media-controls-seek-back-button,
+.audio-element::-webkit-media-controls-seek-forward-button,
+.audio-element::-webkit-media-controls-mute-button,
+.audio-element::-webkit-media-controls-volume-slider,
+.audio-element::-webkit-media-controls-fullscreen-button {
+  background: transparent !important;
+  color: white !important;
+}
+
+.audio-element::-moz-media-controls {
+  background-color: transparent !important;
+  color: white !important;
+
+}

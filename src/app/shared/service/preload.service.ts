@@ -37,7 +37,7 @@ export class PreloadService {
         reject(event);
       };
 
-      // Append the element to the body for video and audio to trigger load
+      // Append the element to the body for video, audio, and iframe to trigger load
       if (element instanceof HTMLVideoElement || element instanceof HTMLAudioElement || element instanceof HTMLIFrameElement) {
         element.style.display = 'none';
         document.body.appendChild(element);

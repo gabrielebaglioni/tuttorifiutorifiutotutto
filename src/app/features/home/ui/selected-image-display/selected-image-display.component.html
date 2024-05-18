@@ -2,10 +2,10 @@
   <div class="mb-24 md:mb-4 w-full md:w-6/12 py-1">
     <div class="image-container">
       <ng-container [ngSwitch]="determineFileType(selectedItem.url)">
-        <video *ngSwitchCase="'video'" [src]="selectedItem.url" controls class="image"></video>
-        <audio *ngSwitchCase="'audio'" [src]="selectedItem.url" controls class="image"></audio>
-        <iframe *ngSwitchCase="'pdf'" [src]="selectedItem.url" class="image"></iframe>
-        <img *ngSwitchCase="'image'" [src]="selectedItem.url" [alt]="selectedItem.alt || 'Content'" class="image">
+        <video *ngSwitchCase="'video'" [src]="safeUrl" controls class="image"></video>
+        <audio *ngSwitchCase="'audio'" [src]="safeUrl" controls ></audio>
+        <iframe *ngSwitchCase="'pdf'" [src]="safeUrl" class="image"></iframe>
+        <img *ngSwitchCase="'image'" [src]="safeUrl" [alt]="selectedItem.alt || 'Content'" class="image">
         <p *ngSwitchDefault>Unsupported file type</p>
       </ng-container>
     </div>

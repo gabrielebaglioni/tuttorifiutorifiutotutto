@@ -1,7 +1,7 @@
 <ng-container [ngSwitch]="fileType">
-  <video *ngSwitchCase="'video'" [src]="item.url" controls class="catalog-image"></video>
-  <audio *ngSwitchCase="'audio'" [src]="item.url" controls class="catalog-image"></audio>
-  <iframe *ngSwitchCase="'pdf'" [src]="item.url" class="catalog-image"></iframe>
-  <img *ngSwitchCase="'image'" [src]="item.url" alt="Content" class="catalog-image">
+  <video *ngSwitchCase="'video'" [src]="safeUrl" controls class="catalog-image"></video>
+  <audio *ngSwitchCase="'audio'" [src]="safeUrl" controls class="audio-element "></audio>
+  <iframe *ngSwitchCase="'pdf'" [src]="safeUrl" class="catalog-image"></iframe>
+  <img *ngSwitchCase="'image'" [src]="safeUrl" alt="Content" class="catalog-image">
   <p *ngSwitchDefault>Unsupported file type</p>
 </ng-container>

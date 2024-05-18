@@ -16,7 +16,7 @@ export class DataService {
       year: '2023-2024',
       items: [
         { id: 'item1', url: 'https://media.gqitalia.it/photos/5d60131f1c0b03000814bc43/1:1/w_1657,h_1657,c_limit/GettyImages-845711818.jpg' },
-        { id: 'item2', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg' },
+        { id: 'item2', url: 'assets/audio/finto-uomo.mp3' },
         { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg' }
       ]
     },
@@ -26,8 +26,8 @@ export class DataService {
       category: 'Tech/Gaming',
       year: '2023-2024',
       items: [
-        { id: 'item3', url: 'https://blog.giallozafferano.it/peperonciniedintorni/wp-content/uploads/2015/12/cachi-o-kaki-Diospyros-kaki_Frutti.jpg' },
-        { id: 'item4', url: 'assets/video/INTERMEZZO.mp4' },
+        { id: 'item4', url: 'assets/pdf/TRENOS.pdf' },
+        { id: 'item5', url: 'assets/video/INTERMEZZO.mp4' },
       ]
     }
   ];
@@ -38,13 +38,13 @@ export class DataService {
     const metadata = this.catalogData.map(({ id, name, category, year, items }) => ({
       id, name, category, year, items: items.map(({ id, url }: { id: string; url: string }) => ({ id, url }))
     }));
-    return of(metadata).pipe(); // Simulated delay
+    return of(metadata); // Simulated delay
   }
 
   getItemDetails(catalogId: string, itemId: string) {
     const catalog = this.catalogData.find(catalog => catalog.id === catalogId);
     const item = catalog?.items.find((item: any) => item.id === itemId);
-    return of(item).pipe(); // Simulated delay
+    return of(item); // Simulated delay
   }
 
   preloadItems() {
