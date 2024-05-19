@@ -26,7 +26,7 @@ export class DataService {
       year: '2023-2024',
       items: [
         { id: 'item4', url: 'assets/pdf/TRENOS.pdf', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
-        { id: 'item5', url: 'assets/videos/INTERMEZZO.mp4', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' }
+        { id: 'item5', url: 'assets/video/INTERMEZZO.mp4', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' }
       ]
     }
   ];
