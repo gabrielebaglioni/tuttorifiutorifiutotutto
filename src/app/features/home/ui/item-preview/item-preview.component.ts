@@ -4,6 +4,7 @@ import {CatalogItem, Item, StoreService} from "../../../../shared/service/store.
 import {AsyncPipe, CommonModule, NgSwitch} from "@angular/common";
 import {VariableContentComponent} from "../variable-content/variable-content.component";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {SubscriberComponent} from "../../../../shared/components/subscriber/subscriber.component";
 
 @Component({
   selector: 'app-item-preview',
@@ -18,16 +19,19 @@ import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
   templateUrl: './item-preview.component.html',
   styleUrl: './item-preview.component.css'
 })
-export class ItemPreviewComponent implements OnInit, AfterViewInit {
+export class ItemPreviewComponent extends SubscriberComponent implements OnInit, AfterViewInit {
   @Input() item!: Item;
   fileType: string = '';
   safeUrl!: SafeResourceUrl;
+  previewUrl!: SafeResourceUrl;
 
-  constructor(private sanitizer: DomSanitizer, private renderer: Renderer2) {}
+  constructor(private sanitizer: DomSanitizer, private renderer: Renderer2) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.fileType = this.determineFileType(this.item.url);
     this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.item.url);
+    this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.item.previewUrl);
   }
 
   ngAfterViewInit(): void {
@@ -41,17 +45,5 @@ export class ItemPreviewComponent implements OnInit, AfterViewInit {
     }
   }
 
-  determineFileType(url: string): string {
-    const extension = url.split('.').pop()?.toLowerCase();
-    if (['mp4', 'webm'].includes(extension!)) {
-      return 'video';
-    } else if (['mp3', 'wav', 'ogg'].includes(extension!)) {
-      return 'audio';
-    } else if (['pdf'].includes(extension!)) {
-      return 'pdf';
-    } else if (['jpg', 'jpeg', 'png', 'gif'].includes(extension!)) {
-      return 'image';
-    }
-    return 'unknown';
-  }
+
 }

@@ -4,6 +4,7 @@ import { CatalogItem, Item, StoreService } from "../../../../shared/service/stor
 import { AsyncPipe, CommonModule, NgSwitch, NgSwitchCase, NgSwitchDefault } from "@angular/common";
 import { VariableContentComponent } from "../variable-content/variable-content.component";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { SubscriberComponent } from "../../../../shared/components/subscriber/subscriber.component";
 
 @Component({
   selector: 'app-selected-image-display',
@@ -19,13 +20,15 @@ import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
   templateUrl: './selected-image-display.component.html',
   styleUrls: ['./selected-image-display.component.css']
 })
-export class SelectedImageDisplayComponent implements OnInit {
+export class SelectedImageDisplayComponent extends SubscriberComponent implements OnInit {
   selectedItem$: Observable<Item | null>;
   parentCatalog$: Observable<CatalogItem | null>;
 
   safeUrl: SafeResourceUrl | null = null;
+  previewUrl: SafeResourceUrl | null = null;
 
   constructor(private storeService: StoreService, private sanitizer: DomSanitizer) {
+    super();
     this.selectedItem$ = this.storeService.activeItem$.pipe(map(active => active.item));
     this.parentCatalog$ = this.storeService.activeItem$.pipe(map(active => active.catalog));
   }
@@ -34,8 +37,10 @@ export class SelectedImageDisplayComponent implements OnInit {
     this.selectedItem$.subscribe(item => {
       if (item) {
         this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(item.url);
+        this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(item.previewUrl);
       } else {
         this.safeUrl = null;
+        this.previewUrl = null;
       }
     });
   }

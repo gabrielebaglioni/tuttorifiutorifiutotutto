@@ -1,18 +1,22 @@
 <div class="flex flex-wrap">
-  <div class="mb-24 md:mb-4 w-full md:w-6/12 px-6 py-6">
-    <app-logo [logoUrl]="'../../favicon.png'" [altText]="'Newkid Logo'"></app-logo>
-    <app-selected-image-display></app-selected-image-display>
+  <div class="mb-24 md:mb-4 w-full md:w-6/12 px-6 py-6" (click)="onClickedInside()">
+    <app-logo [logoUrl]="'assets/img/logo.png'" [altText]="'tutto rifiuto'"></app-logo>
+    <div class="image-display">
+      <app-selected-image-display (click)="onClickedInside()"></app-selected-image-display>
+    </div>
   </div>
   <div class="w-full md:w-6/12">
-    <section class="flex flex-wrap relative md:fixed w-full md:w-2/4 pl-6 md:pl-0 pr-6 py-6 z-10 justify-between pb-2">
+    <section class="flex flex-wrap relative md:fixed w-full md:w-2/4 pl-6 md:pl-0 pr-6 py-6 z-10 justify-between pb-2" (click)="onClickedInside()">
       <div><p class="uppercase mb-0">Catalog</p></div>
-      <button (click)="toggleAllExpand()">Expand All [+]</button>
+      <button class="expand-all-btn" (click)="toggleAllExpand(); onClickedInside()">Expand All [+]</button>
     </section>
-    <section class="flex flex-wrap flex-col pt-0 md:pt-14 md:top-0 md:right-0 pl-6 md:pl-0 pr-6 pb-8">
+    <section class="flex flex-wrap flex-col pt-0 md:pt-14 md:top-0 md:right-0 pl-6 md:pl-0 pr-6 pb-8" (click)="onClickedInside()">
       <div class="w-full block"></div>
       <div class="w-full self-start overflow-hidden">
         <ng-container *ngFor="let item of catalogItems$ | async">
-          <app-catalog-item [item]="item"></app-catalog-item>
+          <div class="catalog-item" (click)="onClickedInside()">
+            <app-catalog-item [item]="item"></app-catalog-item>
+          </div>
         </ng-container>
       </div>
     </section>

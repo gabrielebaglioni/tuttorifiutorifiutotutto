@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import {CatalogItem, Item} from './store.service'; // Importa l'interfaccia CatalogItem
+import { CatalogItem, Item } from './store.service';
 import { PreloadService } from './preload.service';
 
 @Injectable({
@@ -15,9 +14,9 @@ export class DataService {
       category: 'Tech/Gaming',
       year: '2023-2024',
       items: [
-        { id: 'item1', url: 'https://media.gqitalia.it/photos/5d60131f1c0b03000814bc43/1:1/w_1657,h_1657,c_limit/GettyImages-845711818.jpg' },
-        { id: 'item2', url: 'assets/audio/finto-uomo.mp3' },
-        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg' }
+        { id: 'item1', url: 'https://media.gqitalia.it/photos/5d60131f1c0b03000814bc43/1:1/w_1657,h_1657,c_limit/GettyImages-845711818.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item2', url: 'assets/audio/finto-uomo.mp3', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' }
       ]
     },
     {
@@ -26,8 +25,8 @@ export class DataService {
       category: 'Tech/Gaming',
       year: '2023-2024',
       items: [
-        { id: 'item4', url: 'assets/pdf/TRENOS.pdf' },
-        { id: 'item5', url: 'assets/video/INTERMEZZO.mp4' },
+        { id: 'item4', url: 'assets/pdf/TRENOS.pdf', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item5', url: 'assets/videos/INTERMEZZO.mp4', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' }
       ]
     }
   ];
@@ -36,7 +35,7 @@ export class DataService {
 
   getCatalogMetadata() {
     const metadata = this.catalogData.map(({ id, name, category, year, items }) => ({
-      id, name, category, year, items: items.map(({ id, url }: { id: string; url: string }) => ({ id, url }))
+      id, name, category, year, items: items.map(({ id, url, previewUrl }: { id: string; url: string; previewUrl: string }) => ({ id, url, previewUrl }))
     }));
     return of(metadata); // Simulated delay
   }
@@ -50,7 +49,7 @@ export class DataService {
   preloadItems() {
     this.catalogData.forEach(catalog => {
       catalog.items.forEach((item: any) => {
-        this.preloadService.preload(item.url).catch(err => console.error(`Failed to preload ${item.url}:`, err));
+        this.preloadService.preload(item.previewUrl).catch(err => console.error(`Failed to preload ${item.previewUrl}:`, err));
       });
     });
   }

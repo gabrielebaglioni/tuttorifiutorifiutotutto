@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {DataService} from "./dataService";
+import { DataService } from './dataService';
 
 export interface Item {
   id: string;
   url: string;
+  previewUrl: string;
   alt?: string;
 }
 
@@ -59,6 +60,13 @@ export class StoreService {
   }
 
   setActiveItem(activeItem: ActiveItem) {
+    const currentActiveItem = this.activeItemSubject.value;
+    if (
+      currentActiveItem.item?.id === activeItem.item?.id &&
+      currentActiveItem.catalog?.id === activeItem.catalog?.id
+    ) {
+      return; // Do not set the active item if it is already active
+    }
     this.activeItemSubject.next(activeItem);
   }
 
@@ -72,6 +80,10 @@ export class StoreService {
 
   toggleItem(id: string) {
     const expandedItems = this.expandedItemsSubject.value;
+
+    // Close all items before opening the selected one
+    Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
+
     expandedItems[id] = !expandedItems[id];
     this.expandedItemsSubject.next(expandedItems);
 
@@ -88,19 +100,30 @@ export class StoreService {
     }
   }
 
+  closeAll() {
+    const expandedItems = this.expandedItemsSubject.value;
+    Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
+    this.expandedItemsSubject.next(expandedItems);
+    this.activeItemSubject.next({ item: null, catalog: null });
+  }
+
   toggleAllExpand() {
     const allExpanded = !this.allExpandedSubject.value;
     this.allExpandedSubject.next(allExpanded);
 
     const expandedItems = this.expandedItemsSubject.value;
-    const newState = !Object.values(expandedItems).every(Boolean);
-    for (let key in expandedItems) {
-      expandedItems[key] = newState;
-    }
-    this.expandedItemsSubject.next(expandedItems);
-
-    if (!allExpanded) {
+    if (allExpanded) {
+      // Expand all items
+      Object.keys(expandedItems).forEach(key => expandedItems[key] = true);
+      const catalog = this.catalogItemsSubject.value;
+      if (catalog.length > 0) {
+        this.loadItemDetails(catalog[0].id, catalog[0].items[0].id);
+      }
+    } else {
+      // Collapse all items
+      Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
       this.activeItemSubject.next({ item: null, catalog: null });
     }
+    this.expandedItemsSubject.next(expandedItems);
   }
 }
