@@ -1,9 +1,14 @@
+.relative {
+  position: relative;
+}
+
 .image-container {
   position: relative;
   height: auto;
   max-height: fit-content;
   overflow: hidden;
 }
+
 .media {
   display: block;
   max-width: 100%;
@@ -11,10 +16,16 @@
   object-fit: contain;
   margin: auto;
 }
+
 .pdf {
+  display: block;
+  object-fit: contain;
+  margin: auto;
   min-width: 87%;
   min-height: 40rem;
+  background: transparent; /* This makes the background of the iframe transparent */
 }
+
 .image {
   display: block;
   max-width: 100%;
@@ -22,11 +33,26 @@
   object-fit: contain;
   margin: auto;
 }
+
+.download-icon {
+  display: block;
+  margin: 10px auto 0;
+  width: 10px;
+  height: 20px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.material-icons {
+  font-size: 24px;
+}
+
 .audio-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 audio {
   background-color: transparent !important;
   border: none !important;
@@ -55,10 +81,9 @@ audio::-webkit-media-controls-seek-forward-button
 audio::-webkit-media-controls-fullscreen-button
 audio::-webkit-media-controls-rewind-button
 audio::-webkit-media-controls-return-to-realtime-button
-audio::-webkit-media-controls-toggle-closed-captions-button{
+audio::-webkit-media-controls-toggle-closed-captions-button {
   filter: invert(1);
 }
-
 
 .item-info {
   display: flex;
@@ -66,16 +91,29 @@ audio::-webkit-media-controls-toggle-closed-captions-button{
   padding: 1rem;
   font-size: 0.9rem;
 }
+
 .item-info > div {
   padding: 0.5rem;
 }
+
 .left-info {
   width: 58.3333%;
 }
+
 .middle-info {
   width: 16.6667%;
 }
+
 .right-info {
   width: 25%;
   text-align: right;
+}
+.blinking:hover{
+  animation: blink 0.5s step-start infinite;
+}
+
+@keyframes blinking {
+  50% {
+    opacity: 0;
+  }
 }

@@ -4,17 +4,28 @@
       <ng-container [ngSwitch]="determineFileType(selectedItem.url)">
         <video *ngSwitchCase="'video'" [src]="safeUrl" controls class="media"></video>
         <div *ngSwitchCase="'audio'" class="audio-container">
-          <audio id="myaudio" controls >
+          <audio id="myaudio" controls>
             <source [src]="safeUrl" type="audio/mpeg">
           </audio>
           <img [src]="previewUrl" alt="Audio Preview" class="image">
         </div>
         <iframe *ngSwitchCase="'pdf'" [src]="safeUrl" class="pdf"></iframe>
-        <img *ngSwitchCase="'image'" [src]="safeUrl" [alt]="selectedItem.alt || 'Content'" class="image">
+        <div *ngSwitchCase="'image'" class="relative">
+          <img [src]="safeUrl" [alt]="selectedItem.alt || 'Content'" class="image">
+          <div class="blinking block">
+            <a [href]="safeUrl" download class="download-icon">
+              <span class="material-icons">download</span>
+            </a>
+          </div>
+        </div>
         <p *ngSwitchDefault>Unsupported file type</p>
       </ng-container>
+
     </div>
-    <div class="item-info">
+<!--
+    EVENTUALI INFORMAZIONI AGGIUNTIVE SUUL'ITEM SELEZIONATO
+-->
+    <!--<div class="item-info">
       <div class="left-info">
         <p>{{ (parentCatalog$ | async)?.name }}, {{ (parentCatalog$ | async)?.year }}</p>
         <p>{{ (parentCatalog$ | async)?.category }}</p>
@@ -28,7 +39,7 @@
       <div class="w-full max-w-md">
         <p>Full branding for {{ (parentCatalog$ | async)?.name }}: a description here. <br>In collaboration with partners.</p>
       </div>
-    </div>
+    </div>-->
   </div>
 </div>
 <app-variable-content *ngIf="!(selectedItem$ | async)"></app-variable-content>

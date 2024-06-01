@@ -6,7 +6,7 @@
     <div class="w-3/12 text-right">{{ item.year }}</div>
   </button>
   <ng-container *ngIf="isExpanded$ | async">
-    <div class="flex button-links w-full mt-2 mb-2">
+    <div class="flex flex-wrap button-links w-full mt-2 mb-2">
       <button class="button-link" *ngFor="let _item of item.items" (click)="handleItemClick(_item.id)">
         <app-item-preview [item]="_item"></app-item-preview>
       </button>

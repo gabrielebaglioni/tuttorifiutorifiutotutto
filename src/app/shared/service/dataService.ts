@@ -9,14 +9,27 @@ import { PreloadService } from './preload.service';
 export class DataService {
   private catalogData: CatalogItem[] = [
     {
-      id: 'nk-0014',
-      name: 'Arcadia',
+      id: '#1 Pacchetto ',
+      name: '',
       category: 'Tech/Gaming',
       year: '2023-2024',
       items: [
         { id: 'item1', url: 'https://media.gqitalia.it/photos/5d60131f1c0b03000814bc43/1:1/w_1657,h_1657,c_limit/GettyImages-845711818.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
         { id: 'item2', url: 'assets/audio/finto-uomo.mp3', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
-        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' }
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+        { id: 'item3', url: 'assets/img/photo_5927090164977484088_y.jpg', previewUrl: 'assets/img/photo_5927090164977484088_y.jpg' },
+
       ]
     },
     {
