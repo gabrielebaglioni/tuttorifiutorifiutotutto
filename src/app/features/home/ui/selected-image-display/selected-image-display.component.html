@@ -9,7 +9,7 @@
           </audio>
           <img [src]="previewUrl" alt="Audio Preview" class="image">
         </div>
-        <iframe *ngSwitchCase="'pdf'" [src]="safeUrl" class="pdf"></iframe>
+        <iframe *ngSwitchCase="'pdf'" type="pdf" typeof="pdf" [src]="safeUrl" class="pdf"></iframe>
         <div *ngSwitchCase="'image'" class="relative">
           <img [src]="safeUrl" [alt]="selectedItem.alt || 'Content'" class="image">
           <div class="blinking block">
@@ -22,9 +22,9 @@
       </ng-container>
 
     </div>
-<!--
-    EVENTUALI INFORMAZIONI AGGIUNTIVE SUUL'ITEM SELEZIONATO
--->
+    <!--
+        EVENTUALI INFORMAZIONI AGGIUNTIVE SUUL'ITEM SELEZIONATO
+    -->
     <!--<div class="item-info">
       <div class="left-info">
         <p>{{ (parentCatalog$ | async)?.name }}, {{ (parentCatalog$ | async)?.year }}</p>
