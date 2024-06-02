@@ -4,14 +4,14 @@
       <ng-container [ngSwitch]="determineFileType(selectedItem.url)">
         <video *ngSwitchCase="'video'" [src]="safeUrl" controls class="media"></video>
         <div *ngSwitchCase="'audio'" class="audio-container">
-          <audio id="myaudio" controls>
+          <audio id="myaudio" controls *ngIf="audioPlaying">
             <source [src]="safeUrl" type="audio/mpeg">
           </audio>
           <img [src]="previewUrl" alt="Audio Preview" class="image">
         </div>
         <ng-container *ngSwitchCase="'pdf'">
           <iframe *ngIf="!isMobile" type="pdf" typeof="pdf" [src]="safeUrl" class="pdf"></iframe>
-          <app-pdf-placeholder *ngIf="isMobile" [pdfUrl]="pdfUrl!" [previewUrl]="pdfPreviewUrl!" ></app-pdf-placeholder>
+          <app-pdf-placeholder *ngIf="isMobile" [pdfUrl]="pdfUrl!" [previewUrl]="pdfPreviewUrl!"></app-pdf-placeholder>
         </ng-container>
         <div *ngSwitchCase="'image'" class="relative">
           <img [src]="safeUrl" [alt]="selectedItem.alt || 'Content'" class="image">
@@ -25,7 +25,7 @@
       </ng-container>
     </div>
     <!--
-        EVENTUALI INFORMAZIONI AGGIUNTIVE SUUL'ITEM SELEZIONATO
+        EVENTUALI INFORMAZIONI AGGIUNTIVE SULL'ITEM SELEZIONATO
     -->
     <div class="item-info">
       <div class="left-info">

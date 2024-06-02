@@ -39,6 +39,7 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
   isMobile: boolean;
   pdfUrl: string | null = null;
   pdfPreviewUrl: string | null = null;
+  audioPlaying: boolean = false; // Nuova variabile
 
   constructor(
     private storeService: StoreService,
@@ -66,10 +67,16 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
         this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(item.previewUrl);
         this.pdfUrl = item.url;
         this.pdfPreviewUrl = item.previewUrl;
+        if (this.determineFileType(item.url) === 'audio') {
+          this.audioPlaying = false; // Resetta l'audio
+          setTimeout(() => this.audioPlaying = true, 0); // Forza il re-rendering dell'elemento audio
+        }
       } else {
         this.safeUrl = null;
         this.previewUrl = null;
         this.pdfUrl = null;
+        this.pdfPreviewUrl = null;
+        this.audioPlaying = false;
       }
 
       // Detect changes to ensure ViewChild is available
@@ -77,7 +84,7 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
     });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (this.highlightText) {
       this.highlightService.addHighlightEffect(this.highlightText.nativeElement);
     }
