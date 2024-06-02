@@ -1,13 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { map, Observable } from "rxjs";
-import { CatalogItem, Item, StoreService } from "../../../../shared/service/store.service";
-import { AsyncPipe, CommonModule, NgSwitch, NgSwitchCase, NgSwitchDefault } from "@angular/common";
-import { VariableContentComponent } from "../variable-content/variable-content.component";
-import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
-import { SubscriberComponent } from "../../../../shared/components/subscriber/subscriber.component";
-import { HighlightService } from "../../../../shared/utils/highlightService";
+import { map, Observable } from 'rxjs';
+import { CatalogItem, Item, StoreService } from '../../../../shared/service/store.service';
+import { AsyncPipe, CommonModule, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
+import { VariableContentComponent } from '../variable-content/variable-content.component';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SubscriberComponent } from '../../../../shared/components/subscriber/subscriber.component';
+import { HighlightService } from '../../../../shared/utils/highlightService';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
-import { FaIconComponent, FaIconLibrary } from "@fortawesome/angular-fontawesome";
+import { FaIconComponent, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { PdfPlaceholderComponent } from '../pdf-placeholder/pdf-placeholder.component';
 
 @Component({
   selector: 'app-selected-image-display',
@@ -19,7 +20,8 @@ import { FaIconComponent, FaIconLibrary } from "@fortawesome/angular-fontawesome
     NgSwitchDefault,
     VariableContentComponent,
     CommonModule,
-    FaIconComponent
+    FaIconComponent,
+    PdfPlaceholderComponent
   ],
   templateUrl: './selected-image-display.component.html',
   styleUrls: ['./selected-image-display.component.css']
@@ -34,6 +36,8 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
   previewUrl: SafeResourceUrl | null = null;
   selectedItemIndex$: Observable<number | null>;
   faDownload = faDownload;
+  isMobile: boolean;
+  pdfUrl: string | null = null;
 
   constructor(
     private storeService: StoreService,
@@ -49,6 +53,9 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
 
     // Aggiungi l'icona alla libreria
     this.library.addIcons(faDownload);
+
+    // Rileva se il dispositivo è mobile
+    this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   }
 
   ngOnInit(): void {
@@ -56,9 +63,11 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
       if (item) {
         this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(item.url);
         this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(item.previewUrl);
+        this.pdfUrl = item.url;  // Utilizzare direttamente l'URL come stringa
       } else {
         this.safeUrl = null;
         this.previewUrl = null;
+        this.pdfUrl = null;
       }
 
       // Detect changes to ensure ViewChild is available

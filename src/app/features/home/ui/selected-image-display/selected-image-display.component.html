@@ -9,18 +9,20 @@
           </audio>
           <img [src]="previewUrl" alt="Audio Preview" class="image">
         </div>
-        <iframe *ngSwitchCase="'pdf'" type="pdf" typeof="pdf" [src]="safeUrl" class="pdf"></iframe>
+        <ng-container *ngSwitchCase="'pdf'">
+          <iframe *ngIf="!isMobile" type="pdf" typeof="pdf" [src]="safeUrl" class="pdf"></iframe>
+          <app-pdf-placeholder *ngIf="isMobile" [pdfUrl]="pdfUrl!"></app-pdf-placeholder>
+        </ng-container>
         <div *ngSwitchCase="'image'" class="relative">
           <img [src]="safeUrl" [alt]="selectedItem.alt || 'Content'" class="image">
           <div class="blinking block">
             <a [href]="safeUrl" download class="download-icon">
-              <fa-icon [icon]="['fas', 'download']"></fa-icon>
+              <fa-icon [icon]="faDownload"></fa-icon>
             </a>
           </div>
         </div>
         <p *ngSwitchDefault>Unsupported file type</p>
       </ng-container>
-
     </div>
     <!--
         EVENTUALI INFORMAZIONI AGGIUNTIVE SUUL'ITEM SELEZIONATO

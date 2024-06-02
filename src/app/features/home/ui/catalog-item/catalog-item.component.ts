@@ -30,6 +30,11 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     this.isExpanded$ = this.storeService.expandedItems$.pipe(
       map(items => items[this.item.id])
     );
+
+    // Scroll to the top of the page smoothly whenever the active item changes
+    this.storeService.activeItem$.subscribe(() => {
+      smoothScrollToTop();
+    });
   }
 
   handleToggle(): void {
@@ -43,4 +48,12 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     }
     this.storeService.loadItemDetails(this.item.id, itemId);
   }
+}
+
+// Funzione di utilità per lo scrolling fluido
+function smoothScrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 }

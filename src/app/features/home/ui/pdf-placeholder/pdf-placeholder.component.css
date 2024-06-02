@@ -1,0 +1,34 @@
+.pdf-placeholder-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+}
+
+.image {
+  object-fit: contain;
+  width: 100%;
+  height: 350px;
+}
+
+.open-pdf-button {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(291deg, #0e5f4a, #000201, #140307, #2a3367, #210e3a, #58311a, #135f4f, #3b1c5a, #021372);
+  background-size: 1800% 1800%;
+  animation: bg-color-animation 21s ease infinite;
+}
+
+@keyframes bg-color-animation {
+  0% { background-position: 0% 43%; }
+  50% { background-position: 100% 58%; }
+  100% { background-position: 0% 43%; }
+}
