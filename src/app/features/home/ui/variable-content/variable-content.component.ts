@@ -13,6 +13,9 @@ import { HighlightService } from "../../../../shared/utils/highlightService";
 export class VariableContentComponent extends SubscriberComponent implements AfterViewInit {
   @ViewChild('highlightText') highlightText!: ElementRef;
   @ViewChild('highlightText2') highlightText2!: ElementRef;
+  @ViewChild('highlightText3') highlightText3!: ElementRef;
+  @ViewChild('highlightText4') highlightText4!: ElementRef;
+  @ViewChild('highlightText5') highlightText5!: ElementRef;
 
   constructor(private highlightService: HighlightService) {
     super();
@@ -21,5 +24,9 @@ export class VariableContentComponent extends SubscriberComponent implements Aft
   ngAfterViewInit() {
     this.highlightService.addHighlightEffect(this.highlightText.nativeElement);
     this.highlightService.addHighlightEffect(this.highlightText2.nativeElement);
+    this.highlightService.addHighlightEffect(this.highlightText3.nativeElement);
+    this.highlightService.addHighlightEffect(this.highlightText4.nativeElement);
+    this.highlightService.addHighlightEffect(this.highlightText5.nativeElement);
+
   }
 }

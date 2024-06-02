@@ -11,6 +11,34 @@ audio::-webkit-media-controls-panel
 {
   filter: invert(1)!important;
 }
+.reddit-mono-200 {
+  font-family: "Reddit Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.reddit-mono-400 {
+  font-family: "Reddit Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.reddit-mono-600 {
+  font-family: "Reddit Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.reddit-mono-900 {
+  font-family: "Reddit Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
+
 /* src/styles/reset.css */
 *, *::before, *::after {
   margin: 0;
@@ -76,3 +104,4 @@ p, h1, h2, h3, h4, h5, h6 {
     opacity: 0;
   }
 }
+

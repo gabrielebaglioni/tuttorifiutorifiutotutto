@@ -29,6 +29,7 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
   parentCatalog$: Observable<CatalogItem | null>;
   safeUrl: SafeResourceUrl | null = null;
   previewUrl: SafeResourceUrl | null = null;
+  selectedItemIndex$: Observable<number | null>;
 
   constructor(
     private storeService: StoreService,
@@ -38,6 +39,7 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
   ) {
     super();
     this.selectedItem$ = this.storeService.activeItem$.pipe(map(active => active.item));
+    this.selectedItemIndex$ = this.storeService.activeItem$.pipe(map(active => active.index));
     this.parentCatalog$ = this.storeService.activeItem$.pipe(map(active => active.catalog));
   }
 
@@ -50,9 +52,11 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
         this.safeUrl = null;
         this.previewUrl = null;
       }
+
       // Detect changes to ensure ViewChild is available
       this.cdr.detectChanges();
     });
+
   }
 
   ngAfterViewInit() {

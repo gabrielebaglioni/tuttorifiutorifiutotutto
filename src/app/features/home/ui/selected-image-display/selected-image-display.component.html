@@ -25,21 +25,20 @@
     <!--
         EVENTUALI INFORMAZIONI AGGIUNTIVE SUUL'ITEM SELEZIONATO
     -->
-    <!--<div class="item-info">
+    <div class="item-info">
       <div class="left-info">
-        <p>{{ (parentCatalog$ | async)?.name }}, {{ (parentCatalog$ | async)?.year }}</p>
-        <p>{{ (parentCatalog$ | async)?.category }}</p>
+        <p class="reddit-mono-400">{{ (parentCatalog$ | async)?.id }}</p>
       </div>
       <div class="middle-info">
-        <p>{{ (parentCatalog$ | async)?.id }}</p>
+        <p class="reddit-mono-400">{{ (selectedItem$ | async)?.description }} </p>
       </div>
       <div class="right-info">
-        <p>1/{{ (parentCatalog$ | async)?.items!.length }}</p>
+        <p class="reddit-mono-400">{{ ((selectedItemIndex$ | async) ?? 0) + 1 }}/{{ (parentCatalog$ | async)?.items!.length }}</p>
       </div>
-      <div class="w-full max-w-md">
+      <!--<div class="w-full max-w-md">
         <p>Full branding for {{ (parentCatalog$ | async)?.name }}: a description here. <br>In collaboration with partners.</p>
-      </div>
-    </div>-->
+      </div>-->
+    </div>
   </div>
 </div>
 <app-variable-content *ngIf="!(selectedItem$ | async)"></app-variable-content>

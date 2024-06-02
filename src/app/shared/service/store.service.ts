@@ -7,6 +7,7 @@ export interface Item {
   url: string;
   previewUrl: string;
   alt?: string;
+  description?: string;
 }
 
 export interface CatalogItem {
@@ -20,6 +21,7 @@ export interface CatalogItem {
 export interface ActiveItem {
   item: Item | null;
   catalog: CatalogItem | null;
+  index: number | null;
 }
 
 @Injectable({
@@ -29,7 +31,7 @@ export class StoreService {
   private catalogItemsSubject = new BehaviorSubject<CatalogItem[]>([]);
   private allExpandedSubject = new BehaviorSubject<boolean>(false);
   private expandedItemsSubject = new BehaviorSubject<{ [key: string]: boolean }>({});
-  private activeItemSubject = new BehaviorSubject<ActiveItem>({ item: null, catalog: null });
+  private activeItemSubject = new BehaviorSubject<ActiveItem>({ item: null, catalog: null, index: null });
 
   catalogItems$ = this.catalogItemsSubject.asObservable();
   allExpanded$ = this.allExpandedSubject.asObservable();
@@ -52,9 +54,10 @@ export class StoreService {
       const catalogItems = this.catalogItemsSubject.value;
       const catalog = catalogItems.find(c => c.id === catalogId);
       if (catalog && item) {
+        const itemIndex = catalog.items.findIndex(i => i.id === itemId);
         catalog.items = catalog.items.map(i => i.id === itemId ? item : i);
         this.catalogItemsSubject.next(catalogItems);
-        this.setActiveItem({ item, catalog });
+        this.setActiveItem({ item, catalog, index: itemIndex });
       }
     });
   }
@@ -95,7 +98,7 @@ export class StoreService {
     } else {
       const activeItem = this.activeItemSubject.value;
       if (activeItem.catalog && activeItem.catalog.id === id) {
-        this.activeItemSubject.next({ item: null, catalog: null });
+        this.activeItemSubject.next({ item: null, catalog: null , index: null});
       }
     }
   }
@@ -104,7 +107,7 @@ export class StoreService {
     const expandedItems = this.expandedItemsSubject.value;
     Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
     this.expandedItemsSubject.next(expandedItems);
-    this.activeItemSubject.next({ item: null, catalog: null });
+    this.activeItemSubject.next({ item: null, catalog: null , index: null});
   }
 
   toggleAllExpand() {
@@ -122,7 +125,7 @@ export class StoreService {
     } else {
       // Collapse all items
       Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
-      this.activeItemSubject.next({ item: null, catalog: null });
+      this.activeItemSubject.next({ item: null, catalog: null, index: null});
     }
     this.expandedItemsSubject.next(expandedItems);
   }
