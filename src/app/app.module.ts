@@ -10,7 +10,6 @@ import {DataService} from "./shared/service/dataService";
 import {StoreService} from "./shared/service/store.service";
 import {FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
-import {LazyLoadImageModule} from "ng-lazyload-image";
 
 @NgModule({
   declarations: [AppComponent],
