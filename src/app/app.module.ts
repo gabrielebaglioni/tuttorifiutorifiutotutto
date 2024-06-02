@@ -8,6 +8,8 @@ import {RouterModule} from "@angular/router";
 import {PreloadService} from "./shared/service/preload.service";
 import {DataService} from "./shared/service/dataService";
 import {StoreService} from "./shared/service/store.service";
+import {FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {faDownload} from "@fortawesome/free-solid-svg-icons";
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,7 +18,8 @@ import {StoreService} from "./shared/service/store.service";
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    RouterModule
+    RouterModule,
+    FontAwesomeModule
   ],
   providers: [
     StoreService,
@@ -25,4 +28,8 @@ import {StoreService} from "./shared/service/store.service";
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIcons(faDownload);
+  }
+}

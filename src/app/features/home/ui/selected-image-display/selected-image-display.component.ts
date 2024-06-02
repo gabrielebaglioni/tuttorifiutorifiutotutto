@@ -6,6 +6,8 @@ import { VariableContentComponent } from "../variable-content/variable-content.c
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { SubscriberComponent } from "../../../../shared/components/subscriber/subscriber.component";
 import { HighlightService } from "../../../../shared/utils/highlightService";
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent, FaIconLibrary } from "@fortawesome/angular-fontawesome";
 
 @Component({
   selector: 'app-selected-image-display',
@@ -17,6 +19,7 @@ import { HighlightService } from "../../../../shared/utils/highlightService";
     NgSwitchDefault,
     VariableContentComponent,
     CommonModule,
+    FaIconComponent
   ],
   templateUrl: './selected-image-display.component.html',
   styleUrls: ['./selected-image-display.component.css']
@@ -30,17 +33,22 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
   safeUrl: SafeResourceUrl | null = null;
   previewUrl: SafeResourceUrl | null = null;
   selectedItemIndex$: Observable<number | null>;
+  faDownload = faDownload;
 
   constructor(
     private storeService: StoreService,
     private sanitizer: DomSanitizer,
     private highlightService: HighlightService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private library: FaIconLibrary
   ) {
     super();
     this.selectedItem$ = this.storeService.activeItem$.pipe(map(active => active.item));
     this.selectedItemIndex$ = this.storeService.activeItem$.pipe(map(active => active.index));
     this.parentCatalog$ = this.storeService.activeItem$.pipe(map(active => active.catalog));
+
+    // Aggiungi l'icona alla libreria
+    this.library.addIcons(faDownload);
   }
 
   ngOnInit(): void {
@@ -56,7 +64,6 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
       // Detect changes to ensure ViewChild is available
       this.cdr.detectChanges();
     });
-
   }
 
   ngAfterViewInit() {
