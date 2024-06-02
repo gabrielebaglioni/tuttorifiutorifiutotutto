@@ -11,7 +11,7 @@
         </div>
         <ng-container *ngSwitchCase="'pdf'">
           <iframe *ngIf="!isMobile" type="pdf" typeof="pdf" [src]="safeUrl" class="pdf"></iframe>
-          <app-pdf-placeholder *ngIf="isMobile" [pdfUrl]="pdfUrl!"></app-pdf-placeholder>
+          <app-pdf-placeholder *ngIf="isMobile" [pdfUrl]="pdfUrl!" [previewUrl]="pdfPreviewUrl!" ></app-pdf-placeholder>
         </ng-container>
         <div *ngSwitchCase="'image'" class="relative">
           <img [src]="safeUrl" [alt]="selectedItem.alt || 'Content'" class="image">

@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class PdfPlaceholderComponent {
   @Input() pdfUrl!: string;
+  @Input() previewUrl!: string;
 
   openPdf() {
     window.open(this.pdfUrl, '_blank');

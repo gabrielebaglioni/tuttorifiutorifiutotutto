@@ -38,6 +38,7 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
   faDownload = faDownload;
   isMobile: boolean;
   pdfUrl: string | null = null;
+  pdfPreviewUrl: string | null = null;
 
   constructor(
     private storeService: StoreService,
@@ -63,7 +64,8 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
       if (item) {
         this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(item.url);
         this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(item.previewUrl);
-        this.pdfUrl = item.url;  // Utilizzare direttamente l'URL come stringa
+        this.pdfUrl = item.url;
+        this.pdfPreviewUrl = item.previewUrl;
       } else {
         this.safeUrl = null;
         this.previewUrl = null;
