@@ -43,23 +43,21 @@ export class StoreService {
   }
 
   private loadCatalogMetadata() {
-    this.dataService.getCatalogMetadata().subscribe((metadata: CatalogItem[]) => {
-      this.catalogItemsSubject.next(metadata);
-      this.dataService.preloadItems(); // Preload items after metadata is loaded
-    });
+    const metadata = this.dataService.getCatalogMetadata();
+    this.catalogItemsSubject.next(metadata);
+    this.dataService.preloadItems(); // Preload items after metadata is loaded
   }
 
   loadItemDetails(catalogId: string, itemId: string) {
-    this.dataService.getItemDetails(catalogId, itemId).subscribe((item: any) => {
-      const catalogItems = this.catalogItemsSubject.value;
-      const catalog = catalogItems.find(c => c.id === catalogId);
-      if (catalog && item) {
-        const itemIndex = catalog.items.findIndex(i => i.id === itemId);
-        catalog.items = catalog.items.map(i => i.id === itemId ? item : i);
-        this.catalogItemsSubject.next(catalogItems);
-        this.setActiveItem({ item, catalog, index: itemIndex });
-      }
-    });
+    const item = this.dataService.getItemDetails(catalogId, itemId);
+    const catalogItems = this.catalogItemsSubject.value;
+    const catalog = catalogItems.find(c => c.id === catalogId);
+    if (catalog && item) {
+      const itemIndex = catalog.items.findIndex(i => i.id === itemId);
+      catalog.items = catalog.items.map(i => i.id === itemId ? item : i);
+      this.catalogItemsSubject.next(catalogItems);
+      this.setActiveItem({ item, catalog, index: itemIndex });
+    }
   }
 
   setActiveItem(activeItem: ActiveItem) {
@@ -98,7 +96,7 @@ export class StoreService {
     } else {
       const activeItem = this.activeItemSubject.value;
       if (activeItem.catalog && activeItem.catalog.id === id) {
-        this.activeItemSubject.next({ item: null, catalog: null , index: null});
+        this.activeItemSubject.next({ item: null, catalog: null, index: null });
       }
     }
   }
@@ -107,7 +105,7 @@ export class StoreService {
     const expandedItems = this.expandedItemsSubject.value;
     Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
     this.expandedItemsSubject.next(expandedItems);
-    this.activeItemSubject.next({ item: null, catalog: null , index: null});
+    this.activeItemSubject.next({ item: null, catalog: null, index: null });
   }
 
   toggleAllExpand() {
@@ -125,7 +123,7 @@ export class StoreService {
     } else {
       // Collapse all items
       Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
-      this.activeItemSubject.next({ item: null, catalog: null, index: null});
+      this.activeItemSubject.next({ item: null, catalog: null, index: null });
     }
     this.expandedItemsSubject.next(expandedItems);
   }

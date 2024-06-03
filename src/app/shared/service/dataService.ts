@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
+import {forkJoin, interval, of, takeWhile} from 'rxjs';
 import { CatalogItem, Item } from './store.service';
 import { PreloadService } from './preload.service';
 
@@ -10,7 +10,10 @@ import { PreloadService } from './preload.service';
 export class DataService {
 
   private baseBlobUrl = 'https://4neiag8fyznbz2a8.public.blob.vercel-storage.com';
-
+  private previewLoadCount: number = 0;
+  private contentLoadCount: number = 0;
+  private totalPreviewItems: number = 0;
+  private totalContentItems: number = 0;
   private catalogData: CatalogItem[] = [
     {
       id: '#1 Pacchetto ',
@@ -57,23 +60,60 @@ export class DataService {
   constructor(private preloadService: PreloadService) {}
 
   getCatalogMetadata() {
-    const metadata = this.catalogData.map(({ id, name, category, year, items }) => ({
+    return this.catalogData.map(({ id, name, category, year, items }) => ({
       id, name, category, year, items: items.map(({ id, url, previewUrl }: { id: string; url: string; previewUrl: string }) => ({ id, url, previewUrl }))
     }));
-    return of(metadata); // Simulated delay
   }
 
   getItemDetails(catalogId: string, itemId: string) {
     const catalog = this.catalogData.find(catalog => catalog.id === catalogId);
-    const item = catalog?.items.find((item: any) => item.id === itemId);
-    return of(item); // Simulated delay
+    return catalog?.items.find((item: any) => item.id === itemId) || null;
   }
 
   preloadItems() {
-    this.catalogData.forEach(catalog => {
-      catalog.items.forEach((item: any) => {
-        this.preloadService.preload(item.previewUrl).catch(err => console.error(`Failed to preload ${item.previewUrl}:`, err));
-      });
+    const previewLoadObservables = this.catalogData.flatMap(catalog =>
+      catalog.items.map(item => this.preloadService.preload(item.previewUrl).then(() => {
+        this.previewLoadCount++;
+      }))
+    );
+
+    this.totalPreviewItems = previewLoadObservables.length;
+
+    const previewInterval = interval(5000).pipe(
+      takeWhile(() => this.previewLoadCount < this.totalPreviewItems)
+    ).subscribe(() => {
+      console.log(`Preview preloading progress: ${(this.previewLoadCount / this.totalPreviewItems * 100).toFixed(2)}%`);
+    });
+
+    forkJoin(previewLoadObservables).subscribe({
+      complete: () => {
+        previewInterval.unsubscribe();
+        console.log('All preview images preloaded');
+
+        // Once all preview images are loaded, preload the main contents
+        const contentLoadObservables = this.catalogData.flatMap(catalog =>
+          catalog.items.map(item => this.preloadService.preload(item.url).then(() => {
+            this.contentLoadCount++;
+          }))
+        );
+
+        this.totalContentItems = contentLoadObservables.length;
+
+        const contentInterval = interval(5000).pipe(
+          takeWhile(() => this.contentLoadCount < this.totalContentItems)
+        ).subscribe(() => {
+          console.log(`Content preloading progress: ${(this.contentLoadCount / this.totalContentItems * 100).toFixed(2)}%`);
+        });
+
+        forkJoin(contentLoadObservables).subscribe({
+          complete: () => {
+            contentInterval.unsubscribe();
+            console.log('All items preloaded');
+          },
+          error: err => console.error('Error preloading contents', err)
+        });
+      },
+      error: err => console.error('Error preloading preview images', err)
     });
   }
 }
