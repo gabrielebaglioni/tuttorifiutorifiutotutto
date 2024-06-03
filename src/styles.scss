@@ -105,3 +105,19 @@ p, h1, h2, h3, h4, h5, h6 {
   }
 }
 
+@media (min-width: 768px) {
+  /* Rimuovi la scrollbar */
+  body {
+    overflow-y: hidden;
+  }
+
+  /* Specifico per WebKit browsers (Chrome, Safari, ecc.) */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Specifico per Firefox */
+  body {
+    scrollbar-width: none; /* For Firefox */
+  }
+}
