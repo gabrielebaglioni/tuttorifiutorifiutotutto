@@ -2,7 +2,14 @@
   <div class="w-full md:w-8/12 py-1">
     <div class="image-container">
       <ng-container [ngSwitch]="determineFileType(selectedItem.url)">
-        <video *ngSwitchCase="'video'" [src]="safeUrl" controls class="media"></video>
+        <div *ngSwitchCase="'video'" class="video-preview-container">
+          <img [src]="previewUrl" alt="Video Preview" class="image" *ngIf="!videoStarted">
+          <div class="play-button-overlay" *ngIf="!videoStarted" (click)="playVideo()">
+            <fa-icon  [icon]="faPlay" size="1x" class="play-icon"></fa-icon>
+          </div>
+          <video #videoPlayer [src]="safeUrl" controls class="media" *ngIf="videoStarted"></video>
+        </div>
+
         <div *ngSwitchCase="'audio'" class="audio-container">
           <audio id="myaudio" controls *ngIf="audioPlaying">
             <source [src]="safeUrl" type="audio/mpeg">

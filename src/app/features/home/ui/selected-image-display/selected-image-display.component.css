@@ -54,9 +54,7 @@
   text-align: center;
 }
 
-.material-icons {
-  font-size: 24px;
-}
+
 
 .audio-container {
   display: flex;
@@ -107,3 +105,38 @@ audio {
     opacity: 0;
   }
 }
+
+
+.video-preview-container {
+  position: relative;
+
+}
+
+.play-button-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto; /* Allow clicks */
+  padding: 1rem;
+  border-radius: 50%;
+}
+
+.play-icon {
+  font-size: 7rem; /* Adjust the size of the icon */
+  cursor: pointer;
+}
+
+@keyframes color-animation {
+  0% { color: #5a6864; }
+  25% { color: #6f9386; }
+  50% { color: #9e8288; }
+  75% { color: #767c9a; }
+  100% { color: #696c7e; }
+}
+
+.video-preview-container:hover .play-icon {
+  animation: color-animation 7s infinite; /* Apply the animation on hover */
+}
+
+

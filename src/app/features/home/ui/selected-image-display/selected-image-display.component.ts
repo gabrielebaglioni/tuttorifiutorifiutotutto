@@ -6,7 +6,7 @@ import { VariableContentComponent } from '../variable-content/variable-content.c
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SubscriberComponent } from '../../../../shared/components/subscriber/subscriber.component';
 import { HighlightService } from '../../../../shared/utils/highlightService';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { PdfPlaceholderComponent } from '../pdf-placeholder/pdf-placeholder.component';
 
@@ -29,6 +29,7 @@ import { PdfPlaceholderComponent } from '../pdf-placeholder/pdf-placeholder.comp
 export class SelectedImageDisplayComponent extends SubscriberComponent implements OnInit, AfterViewInit {
 
   @ViewChild('highlightText') highlightText!: ElementRef;
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
 
   selectedItem$: Observable<Item | null>;
   parentCatalog$: Observable<CatalogItem | null>;
@@ -36,10 +37,12 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
   previewUrl: SafeResourceUrl | null = null;
   selectedItemIndex$: Observable<number | null>;
   faDownload = faDownload;
+  faPlay = faPlay;
   isMobile: boolean;
   pdfUrl: string | null = null;
   pdfPreviewUrl: string | null = null;
-  audioPlaying: boolean = false; // Nuova variabile
+  audioPlaying: boolean = false;
+  videoStarted: boolean = false; // Variabile per controllare se il video è iniziato
 
   constructor(
     private storeService: StoreService,
@@ -53,10 +56,8 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
     this.selectedItemIndex$ = this.storeService.activeItem$.pipe(map(active => active.index));
     this.parentCatalog$ = this.storeService.activeItem$.pipe(map(active => active.catalog));
 
-    // Aggiungi l'icona alla libreria
-    this.library.addIcons(faDownload);
+    this.library.addIcons(faDownload, faPlay);
 
-    // Rileva se il dispositivo è mobile
     this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   }
 
@@ -68,18 +69,19 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
         this.pdfUrl = item.url;
         this.pdfPreviewUrl = item.previewUrl;
         if (this.determineFileType(item.url) === 'audio') {
-          this.audioPlaying = false; // Resetta l'audio
-          setTimeout(() => this.audioPlaying = true, 0); // Forza il re-rendering dell'elemento audio
+          this.audioPlaying = false;
+          setTimeout(() => this.audioPlaying = true, 0);
         }
+        this.videoStarted = false; // Reset videoStarted quando cambia l'elemento
       } else {
         this.safeUrl = null;
         this.previewUrl = null;
         this.pdfUrl = null;
         this.pdfPreviewUrl = null;
         this.audioPlaying = false;
+        this.videoStarted = false;
       }
 
-      // Detect changes to ensure ViewChild is available
       this.cdr.detectChanges();
     });
   }
@@ -88,6 +90,12 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
     if (this.highlightText) {
       this.highlightService.addHighlightEffect(this.highlightText.nativeElement);
     }
+  }
+
+  playVideo(): void {
+    this.videoStarted = true; // Mostra il video e nasconde l'immagine di anteprima
+    const videoElement = this.videoPlayer.nativeElement;
+    videoElement.play();
   }
 
   determineFileType(url: string): string {
