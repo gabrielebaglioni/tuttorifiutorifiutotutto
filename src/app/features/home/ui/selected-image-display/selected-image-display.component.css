@@ -135,7 +135,7 @@ audio {
   100% { color: #696c7e; }
 }
 
-.video-preview-container:hover .play-icon {
+.video-preview-container .play-icon {
   animation: color-animation 7s infinite; /* Apply the animation on hover */
 }
 
