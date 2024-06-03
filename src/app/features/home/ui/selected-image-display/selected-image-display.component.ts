@@ -94,9 +94,12 @@ export class SelectedImageDisplayComponent extends SubscriberComponent implement
 
   playVideo(): void {
     this.videoStarted = true; // Mostra il video e nasconde l'immagine di anteprima
-    const videoElement = this.videoPlayer.nativeElement;
-    videoElement.play();
+    setTimeout(() => {
+      const videoElement = this.videoPlayer.nativeElement;
+      videoElement.play();
+    }, 0); // Ensure the video element is rendered before calling play()
   }
+
 
   determineFileType(url: string): string {
     const extension = url.split('.').pop()?.toLowerCase();
