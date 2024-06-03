@@ -1,10 +1,21 @@
-import { Component, Input, OnInit, OnDestroy, Renderer2 } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import {
+  Component,
+  Input,
+  OnInit,
+  computed,
+  effect,
+  inject,
+  Injector,
+  runInInjectionContext,
+  signal,
+  Signal
+} from '@angular/core';
 import { CatalogItem, StoreService } from '../../../../shared/service/store.service';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { SelectedImageDisplayComponent } from '../selected-image-display/selected-image-display.component';
 import { ItemPreviewComponent } from '../item-preview/item-preview.component';
-import { SubscriberComponent } from '../../../../shared/components/subscriber/subscriber.component';
+import { SubscriberComponent } from "../../../../shared/components/subscriber/subscriber.component";
+import { map, Observable } from "rxjs";
 
 @Component({
   selector: 'app-catalog-item',
@@ -12,7 +23,6 @@ import { SubscriberComponent } from '../../../../shared/components/subscriber/su
   standalone: true,
   imports: [
     CommonModule,
-    AsyncPipe,
     SelectedImageDisplayComponent,
     ItemPreviewComponent,
   ],
@@ -22,20 +32,26 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
   @Input() item!: CatalogItem;
   isExpanded$: Observable<boolean> | undefined;
   isExpanded = false;
+  isLoading$: Signal<boolean>;
 
-  constructor(private storeService: StoreService, private renderer: Renderer2) {
+  private storeService = inject(StoreService);
+  private injector = inject(Injector);
+
+  constructor() {
     super();
+    runInInjectionContext(this.injector, () => {
+      effect(() => {
+        if (this.storeService.activeItem().catalog?.id === this.item.id) {
+          smoothScrollToTop();
+        }
+      }, { allowSignalWrites: true });
+    });
+    this.isLoading$ = this.storeService.isLoading$();
   }
 
   ngOnInit(): void {
     this.isExpanded$ = this.storeService.expandedItems$.pipe(
       map(items => items[this.item.id])
-    );
-
-    this._subscriptions.push(
-      this.storeService.activeItem$.subscribe(() => {
-        smoothScrollToTop();
-      })
     );
   }
 
@@ -60,6 +76,11 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     setTimeout(() => {
       this.storeService.loadItemDetails(catalogId, itemId);
     }, 100); // Adjust the delay as needed
+  }
+
+  getPreviewImageUrl(url: string): string | undefined {
+    const preloadedImage = this.storeService.getPreloadedImage(url);
+    return preloadedImage ? preloadedImage.src : undefined;
   }
 }
 

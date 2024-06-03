@@ -1,16 +1,66 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles to hide scrollbar on all devices */
+body, html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* This will hide the scrollbar */
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+
+.highlight-effect {
+  animation: blink 0.5s step-start infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Other styles */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 audio::-webkit-media-controls-enclosure {
   background-color: transparent !important;
-
 }
 
-audio::-webkit-media-controls-panel
-{
-  filter: invert(1)!important;
+audio::-webkit-media-controls-panel {
+  filter: invert(1) !important;
 }
+
 .reddit-mono-200 {
   font-family: "Reddit Mono", monospace;
   font-optical-sizing: auto;
@@ -46,8 +96,8 @@ audio::-webkit-media-controls-panel
   box-sizing: border-box;
   font-size: 8px;
   font-family: 'Roboto', sans-serif;
-
 }
+
 body {
   @apply bg-gray-800 text-white;
 }
@@ -69,39 +119,3 @@ body {
   max-width: 100%; /* Questo farà sì che l'immagine non superi la larghezza del suo contenitore */
   object-fit: cover; /* Questo farà sì che l'immagine copra completamente l'area senza distorcere le proporzioni */
 }
-body, html {
-  height: 100%;
-  width: 100%;
-}
-
-body {
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-img, picture, video, canvas, svg {
-  display: block;
-  max-width: 100%;
-}
-
-input, button, textarea, select {
-  font: inherit;
-}
-
-p, h1, h2, h3, h4, h5, h6 {
-  overflow-wrap: break-word;
-}
-
-#root, #__next {
-  isolation: isolate;
-}
-.highlight-effect {
-  animation: blink 0.5s step-start infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-

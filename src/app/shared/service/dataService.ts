@@ -1,7 +1,6 @@
-
-import { Injectable } from '@angular/core';
-import {forkJoin, interval, of, takeWhile} from 'rxjs';
-import { CatalogItem, Item } from './store.service';
+import { Injectable, signal, WritableSignal } from '@angular/core';
+import { forkJoin, interval, of, takeWhile } from 'rxjs';
+import { CatalogItem } from './store.service';
 import { PreloadService } from './preload.service';
 
 @Injectable({
@@ -10,10 +9,8 @@ import { PreloadService } from './preload.service';
 export class DataService {
 
   private baseBlobUrl = 'https://4neiag8fyznbz2a8.public.blob.vercel-storage.com';
-  private previewLoadCount: number = 0;
-  private contentLoadCount: number = 0;
-  private totalPreviewItems: number = 0;
-  private totalContentItems: number = 0;
+  private previewLoadCount: WritableSignal<number> = signal(0);
+  private totalPreviewItems: WritableSignal<number> = signal(0);
   private catalogData: CatalogItem[] = [
     {
       id: '#1 Pacchetto ',
@@ -70,50 +67,26 @@ export class DataService {
     return catalog?.items.find((item: any) => item.id === itemId) || null;
   }
 
-  preloadItems() {
-    const previewLoadObservables = this.catalogData.flatMap(catalog =>
-      catalog.items.map(item => this.preloadService.preload(item.previewUrl).then(() => {
-        this.previewLoadCount++;
-      }))
-    );
-
-    this.totalPreviewItems = previewLoadObservables.length;
-
-    const previewInterval = interval(5000).pipe(
-      takeWhile(() => this.previewLoadCount < this.totalPreviewItems)
-    ).subscribe(() => {
-      console.log(`Preview preloading progress: ${(this.previewLoadCount / this.totalPreviewItems * 100).toFixed(2)}%`);
+  preloadImage(url: string): Promise<void> {
+    return this.preloadService.preload(url).then(() => {
+      this.previewLoadCount.update(count => count + 1);
     });
+  }
 
-    forkJoin(previewLoadObservables).subscribe({
-      complete: () => {
-        previewInterval.unsubscribe();
-        console.log('All preview images preloaded');
+  preloadImagesForCatalog(catalogId: string): Promise<void> {
+    const catalog = this.catalogData.find(catalog => catalog.id === catalogId);
+    if (!catalog) return Promise.resolve();
 
-        // Once all preview images are loaded, preload the main contents
-        const contentLoadObservables = this.catalogData.flatMap(catalog =>
-          catalog.items.map(item => this.preloadService.preload(item.url).then(() => {
-            this.contentLoadCount++;
-          }))
-        );
+    const previewLoadObservables = catalog.items
+      .filter(item => item.previewUrl.endsWith('.jpg') || item.previewUrl.endsWith('.jpeg') || item.previewUrl.endsWith('.png') || item.previewUrl.endsWith('.gif'))
+      .map(item => this.preloadImage(item.previewUrl));
 
-        this.totalContentItems = contentLoadObservables.length;
+    this.totalPreviewItems.set(previewLoadObservables.length);
 
-        const contentInterval = interval(5000).pipe(
-          takeWhile(() => this.contentLoadCount < this.totalContentItems)
-        ).subscribe(() => {
-          console.log(`Content preloading progress: ${(this.contentLoadCount / this.totalContentItems * 100).toFixed(2)}%`);
-        });
-
-        forkJoin(contentLoadObservables).subscribe({
-          complete: () => {
-            contentInterval.unsubscribe();
-            console.log('All items preloaded');
-          },
-          error: err => console.error('Error preloading contents', err)
-        });
-      },
-      error: err => console.error('Error preloading preview images', err)
+    return forkJoin(previewLoadObservables).toPromise().then(() => {
+      console.log('All preview images preloaded for catalog:', catalogId);
+    }).catch(err => {
+      console.error('Error preloading preview images for catalog:', err);
     });
   }
 }

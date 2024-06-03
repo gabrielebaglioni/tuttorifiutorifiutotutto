@@ -1,3 +1,3 @@
-<ng-container [ngSwitch]="fileType">
-  <img *ngSwitchDefault [src]="previewUrl" alt="Preview" class="catalog-image">
+<ng-container>
+  <img [src]="safePreviewUrl()" alt="Preview" class="catalog-image">
 </ng-container>

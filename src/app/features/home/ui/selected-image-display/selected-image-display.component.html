@@ -1,29 +1,29 @@
-<div *ngIf="selectedItem$ | async as selectedItem">
+<div *ngIf="selectedItem() as selectedItem">
   <div class="w-full md:w-8/12 py-1">
     <div class="image-container">
       <ng-container [ngSwitch]="determineFileType(selectedItem.url)">
         <div *ngSwitchCase="'video'" class="video-preview-container">
-          <img [src]="previewUrl" alt="Video Preview" class="image" *ngIf="!videoStarted">
-          <div class="play-button-overlay" *ngIf="!videoStarted" (click)="playVideo()">
-            <fa-icon  [icon]="faPlay" size="1x" class="play-icon"></fa-icon>
+          <img [src]="previewUrl()" alt="Video Preview" class="image" *ngIf="!videoStarted()">
+          <div class="play-button-overlay" *ngIf="!videoStarted()" (click)="playVideo()">
+            <fa-icon [icon]="faPlay" size="1x" class="play-icon"></fa-icon>
           </div>
-          <video #videoPlayer [src]="safeUrl" controls class="media" *ngIf="videoStarted"></video>
+          <video #videoPlayer [src]="safeUrl()" controls class="media" *ngIf="videoStarted()"></video>
         </div>
 
         <div *ngSwitchCase="'audio'" class="audio-container">
-          <audio id="myaudio" controls *ngIf="audioPlaying">
-            <source [src]="safeUrl" type="audio/mpeg">
+          <audio id="myaudio" controls *ngIf="audioPlaying()">
+            <source [src]="safeUrl()" type="audio/mpeg">
           </audio>
-          <img [src]="previewUrl" alt="Audio Preview" class="image">
+          <img [src]="previewUrl()" alt="Audio Preview" class="image">
         </div>
         <ng-container *ngSwitchCase="'pdf'">
-          <iframe *ngIf="!isMobile" type="pdf" typeof="pdf" [src]="safeUrl" class="pdf"></iframe>
-          <app-pdf-placeholder *ngIf="isMobile" [pdfUrl]="pdfUrl!" [previewUrl]="pdfPreviewUrl!"></app-pdf-placeholder>
+          <iframe *ngIf="!isMobile" type="pdf" typeof="pdf" [src]="safeUrl()" class="pdf"></iframe>
+          <app-pdf-placeholder *ngIf="isMobile" [pdfUrl]="pdfUrl()!" [previewUrl]="pdfPreviewUrl()!"></app-pdf-placeholder>
         </ng-container>
         <div *ngSwitchCase="'image'" class="relative">
-          <img [src]="safeUrl" [alt]="selectedItem.alt || 'Content'" class="image">
+          <img #imageElement [src]="safeUrl()" [alt]="selectedItem.alt || 'Content'" class="image" (dblclick)="toggleFullScreen()">
           <div class="blinking block">
-            <a [href]="safeUrl" download class="download-icon">
+            <a [href]="safeUrl()" download class="download-icon">
               <fa-icon [icon]="faDownload"></fa-icon>
             </a>
           </div>
@@ -31,23 +31,17 @@
         <p *ngSwitchDefault>Unsupported file type</p>
       </ng-container>
     </div>
-    <!--
-        EVENTUALI INFORMAZIONI AGGIUNTIVE SULL'ITEM SELEZIONATO
-    -->
     <div class="item-info">
       <div class="left-info">
-        <p class="reddit-mono-400">{{ (parentCatalog$ | async)?.id }}</p>
+        <p class="reddit-mono-400">{{ parentCatalog()?.id }}</p>
       </div>
       <div class="middle-info">
-        <p class="reddit-mono-400">{{ (selectedItem$ | async)?.description }} </p>
+        <p class="reddit-mono-400">{{ selectedItem?.description }}</p>
       </div>
       <div class="right-info">
-        <p class="reddit-mono-400">{{ ((selectedItemIndex$ | async) ?? 0) + 1 }}/{{ (parentCatalog$ | async)?.items!.length }}</p>
+        <p class="reddit-mono-400">{{ (selectedItemIndex() ?? 0) + 1 }}/{{ parentCatalog()?.items!.length }}</p>
       </div>
-      <!--<div class="w-full max-w-md">
-        <p>Full branding for {{ (parentCatalog$ | async)?.name }}: a description here. <br>In collaboration with partners.</p>
-      </div>-->
     </div>
   </div>
 </div>
-<app-variable-content *ngIf="!(selectedItem$ | async)"></app-variable-content>
+<app-variable-content *ngIf="!selectedItem()"></app-variable-content>

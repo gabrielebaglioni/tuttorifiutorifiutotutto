@@ -15,7 +15,7 @@
     <section class="flex flex-wrap flex-col pt-0 md:pt-14 md:top-0 md:right-0 pl-6 md:pl-0 pr-6 pb-8" (click)="onClickedInside()">
       <div class="w-full block"></div>
       <div class="w-full self-start overflow-hidden">
-        <ng-container *ngFor="let item of catalogItems$ | async">
+        <ng-container *ngFor="let item of catalogItems()">
           <div class="catalog-item" (click)="onClickedInside()">
             <app-catalog-item [item]="item"></app-catalog-item>
           </div>
