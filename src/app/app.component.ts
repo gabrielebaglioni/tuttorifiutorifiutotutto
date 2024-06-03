@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {PreloadService} from "./shared/service/preload.service";
 import {DataService} from "./shared/service/dataService";
 
 @Component({
@@ -8,7 +7,7 @@ import {DataService} from "./shared/service/dataService";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor(private preloadService: PreloadService, private dataService: DataService) {
+  constructor( private dataService: DataService) {
   }
 
   ngOnInit(): void {
