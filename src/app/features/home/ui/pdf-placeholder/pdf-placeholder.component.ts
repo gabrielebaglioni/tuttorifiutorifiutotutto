@@ -14,5 +14,6 @@ export class PdfPlaceholderComponent {
 
   openPdf() {
     window.open(this.pdfUrl, '_blank');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

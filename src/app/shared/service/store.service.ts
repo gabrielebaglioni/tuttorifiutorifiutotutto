@@ -82,12 +82,15 @@ export class StoreService {
   toggleItem(id: string) {
     const expandedItems = this.expandedItemsSubject.value;
 
-    // Close all items before opening the selected one
-    Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
-
+    // Toggle the item state
     expandedItems[id] = !expandedItems[id];
     this.expandedItemsSubject.next(expandedItems);
 
+    // Check if all items are expanded
+    const allExpanded = Object.values(expandedItems).every(expanded => expanded);
+    this.allExpandedSubject.next(allExpanded);
+
+    // Load the first item of the catalog if expanded
     if (expandedItems[id]) {
       const catalog = this.catalogItemsSubject.value.find(catalog => catalog.id === id);
       if (catalog && catalog.items.length > 0) {
@@ -105,6 +108,7 @@ export class StoreService {
     const expandedItems = this.expandedItemsSubject.value;
     Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
     this.expandedItemsSubject.next(expandedItems);
+    this.allExpandedSubject.next(false);
     this.activeItemSubject.next({ item: null, catalog: null, index: null });
   }
 

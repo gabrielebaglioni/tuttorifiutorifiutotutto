@@ -5,8 +5,8 @@
     <div class="hidden md:block w-3/12 reddit-mono-400">{{ item.category }}</div>
     <div class="w-3/12 text-right reddit-mono-400">{{ item.year }}</div>
   </button>
-  <ng-container *ngIf="isExpanded$ | async">
-    <div class="flex flex-wrap button-links w-full mt-2 mb-2 ">
+  <ng-container *ngIf="isExpanded$ | async as isExpanded">
+    <div [class.collapsed]="!isExpanded" [class.expanded]="isExpanded" class="flex-wrapper mt-2 mb-2">
       <button class="button-link mb-2.5" *ngFor="let _item of item.items" (click)="handleItemClick(_item.id)">
         <app-item-preview [item]="_item" class="mb-2 pb-2.5"></app-item-preview>
       </button>

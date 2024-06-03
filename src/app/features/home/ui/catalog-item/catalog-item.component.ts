@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Renderer2 } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { CatalogItem, StoreService } from '../../../../shared/service/store.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -21,8 +21,9 @@ import { SubscriberComponent } from '../../../../shared/components/subscriber/su
 export class CatalogItemComponent extends SubscriberComponent implements OnInit {
   @Input() item!: CatalogItem;
   isExpanded$: Observable<boolean> | undefined;
+  isExpanded = false;
 
-  constructor(private storeService: StoreService) {
+  constructor(private storeService: StoreService, private renderer: Renderer2) {
     super();
   }
 
@@ -31,13 +32,15 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
       map(items => items[this.item.id])
     );
 
-    // Scroll to the top of the page smoothly whenever the active item changes
-    this.storeService.activeItem$.subscribe(() => {
-      smoothScrollToTop();
-    });
+    this._subscriptions.push(
+      this.storeService.activeItem$.subscribe(() => {
+        smoothScrollToTop();
+      })
+    );
   }
 
   handleToggle(): void {
+    this.isExpanded = !this.isExpanded;
     this.storeService.toggleItem(this.item.id);
   }
 
@@ -46,7 +49,17 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     if (activeItem.item?.id === itemId && activeItem.catalog?.id === this.item.id) {
       return; // Do not reload the item if it is already active
     }
-    this.storeService.loadItemDetails(this.item.id, itemId);
+    this.resetViewportAndLoadItem(this.item.id, itemId);
+  }
+
+  resetViewportAndLoadItem(catalogId: string, itemId: string): void {
+    // Reset the viewport
+    smoothScrollToTop();
+
+    // Delay the item loading to ensure viewport reset
+    setTimeout(() => {
+      this.storeService.loadItemDetails(catalogId, itemId);
+    }, 100); // Adjust the delay as needed
   }
 }
 

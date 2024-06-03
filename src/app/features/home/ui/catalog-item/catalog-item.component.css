@@ -3,3 +3,49 @@
   margin-right: 1rem;
   cursor: pointer;
 }
+
+
+
+/* Stili generali per la transizione */
+.catalog-image,
+.image-container,
+.button-link {
+  transition: all 0.3s ease-in-out;
+}
+
+.catalog-item-expanded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.catalog-item-collapsed {
+  opacity: 0;
+  transform: translateY(-10px);
+  display: none;
+}
+
+/* Aggiungi altre classi per gestire le transizioni e le animazioni */
+.flex-wrapper {
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.flex-wrapper.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.flex-wrapper.expanded {
+  max-height: 1000px; /* Adjust according to the content size */
+  opacity: 1;
+}
+
+.expand-all-btn {
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.expand-all-btn:hover {
+  opacity: 0.8;
+}
+
