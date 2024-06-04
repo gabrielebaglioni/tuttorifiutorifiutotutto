@@ -29,7 +29,7 @@ import {SubscriberComponent} from "../../../../shared/components/subscriber/subs
   ],
   styleUrls: ['./catalog-item.component.css']
 })
-export class CatalogItemComponent extends SubscriberComponent implements OnInit,OnChanges,AfterViewInit {
+export class CatalogItemComponent extends SubscriberComponent implements OnInit,AfterViewInit {
   @Input() item!: CatalogItem;
   isExpanded$: Observable<boolean> | undefined;
   isExpanded = false;
@@ -63,16 +63,20 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit,
       setTimeout(() => this.isScrolling = false, 200);
     });
   }
-  ngOnChanges(): void {
+
+  ngAfterViewInit() {
+    fromEvent(document, 'touchmove').pipe(
+      debounceTime(200) // Ignore events if they are too close together
+    ).subscribe(() => this.isScrolling = true);
+
+    fromEvent(document, 'touchend').pipe(
+      debounceTime(200) // Ignore events if they are too close together
+    ).subscribe(() => this.isScrolling = false);
+
     if (this.storeService.activeItem().catalog?.id === this.item.id) {
-      smoothScrollToTop().then(() => {console.log('smoothScrollToTop On changes')});
+      smoothScrollToTop().then(() => {console.log('smoothScrollToTop afterviewinit')});
     }
   }
-ngAfterViewInit() {
-  if (this.storeService.activeItem().catalog?.id === this.item.id) {
-    smoothScrollToTop().then(() => {console.log('smoothScrollToTop afterviewinit')});
-  }
-}
 
   handleToggle(): void {
     if (!this.isScrolling) {
