@@ -15,8 +15,8 @@ import { CommonModule } from '@angular/common';
 import { SelectedImageDisplayComponent } from '../selected-image-display/selected-image-display.component';
 import { ItemPreviewComponent } from '../item-preview/item-preview.component';
 import { map, Observable } from "rxjs";
+import { smoothScrollToTop } from '../../../../shared/utils/smoothScrollToTop';
 import {SubscriberComponent} from "../../../../shared/components/subscriber/subscriber.component";
-import {smoothScrollToTop} from "../../../../shared/utils/smoothScrollToTop";
 
 @Component({
   selector: 'app-catalog-item',
@@ -61,18 +61,17 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     this.storeService.toggleItem(this.item.id);
   }
 
-  async handleItemClick(itemId: string): Promise<void> {
-    const activeItem = this.storeService.getActiveItem();
-    if (activeItem.item?.id === itemId && activeItem.catalog?.id === this.item.id) {
-      return; // Do not reload the item if it is already active
-    }
+  handleItemClick(itemId: string): void {
     this.resetViewportAndLoadItem(this.item.id, itemId);
+    const activeItem = this.storeService.getActiveItem();
+    if (activeItem.item?.id !== itemId || activeItem.catalog?.id !== this.item.id) {
+      this.storeService.loadItemDetails(this.item.id, itemId);
+    }
   }
 
   resetViewportAndLoadItem(catalogId: string, itemId: string): void {
     // Reset the viewport and load the item simultaneously
     smoothScrollToTop();
-    this.storeService.loadItemDetails(catalogId, itemId);
   }
 
   getPreviewImageUrl(url: string): string | undefined {

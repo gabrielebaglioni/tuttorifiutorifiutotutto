@@ -9,13 +9,17 @@ button {
   pointer-events: auto;
   touch-action: manipulation;
 }
-
+.catalog-image{
+    pointer-events: all;
+    touch-action: manipulation;
+}
 
 /* Stili generali per la transizione */
 .catalog-image,
 .image-container,
 .button-link {
   transition: all 0.3s ease-in-out;
+
 }
 
 .catalog-item-expanded {

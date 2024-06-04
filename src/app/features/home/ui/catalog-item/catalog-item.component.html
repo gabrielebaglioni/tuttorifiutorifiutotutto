@@ -12,7 +12,9 @@
       </ng-container>
       <ng-template #content>
         <button class="button-link mb-2.5" *ngFor="let _item of item.items" (click)="handleItemClick(_item.id)">
-          <app-item-preview [previewUrl]="getPreviewImageUrl(_item.previewUrl) || _item.previewUrl" [itemId]="_item.id" [catalogId]="item.id" class="mb-2 pb-2.5"></app-item-preview>
+          <app-item-preview [previewUrl]="getPreviewImageUrl(_item.previewUrl) || _item.previewUrl" [itemId]="_item.id" [catalogId]="item.id" class="mb-2 pb-2.5"
+                            (itemClick)="handleItemClick($event)"
+          ></app-item-preview>
         </button>
       </ng-template>
     </div>
