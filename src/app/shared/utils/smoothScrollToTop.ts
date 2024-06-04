@@ -1,5 +1,6 @@
-// scroll-utils.ts
 export function smoothScrollToTop(): Promise<void> {
+  let isResolved = false; // Flag to ensure promise is resolved only once
+
   return new Promise<void>((resolve) => {
     const scrollToTop = () => {
       if ('scrollBehavior' in document.documentElement.style) {
@@ -13,9 +14,13 @@ export function smoothScrollToTop(): Promise<void> {
     };
 
     const checkIfScrollCompleted = () => {
-      if (window.scrollY === 0) {
+      if (window.scrollY === 0 && !isResolved) {
         window.removeEventListener('scroll', checkIfScrollCompleted);
+        isResolved = true; // Set flag to true
         resolve();
+      } else {
+        // Use requestAnimationFrame for more efficient and smooth scrolling
+        window.requestAnimationFrame(checkIfScrollCompleted);
       }
     };
 

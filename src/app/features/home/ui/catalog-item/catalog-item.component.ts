@@ -34,8 +34,9 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
   isExpanded$: Observable<boolean> | undefined;
   isExpanded = false;
   isLoading$: Signal<boolean>;
-  private clickDebounceTime = 200; // Tempo di ritardo in millisecondi
-  private lastTouchTime = 0;
+  private isScrolling = false;
+  private isResolving = false; // Add this line
+
   private storeService = inject(StoreService);
   private injector = inject(Injector);
 
@@ -44,7 +45,6 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     runInInjectionContext(this.injector, () => {
       effect(() => {
         if (this.storeService.activeItem().catalog?.id === this.item.id) {
-          smoothScrollToTop();
         }
       }, { allowSignalWrites: true });
     });
@@ -56,25 +56,29 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
       map(items => items[this.item.id])
     );
 
-    // Aggiungi un listener per l'evento 'touchstart'
-    fromEvent(document, 'touchstart').pipe(
-      debounceTime(this.clickDebounceTime),
-      map(() => new Date().getTime())
-    ).subscribe(time => this.lastTouchTime = time);
+    // Add a listener for the 'touchmove' event
+    fromEvent(document, 'touchmove').subscribe(() => this.isScrolling = true);
+
+    // Add a listener for the 'touchend' event
+    fromEvent(document, 'touchend').subscribe(() => {
+      // After a brief delay, set isScrolling to false
+      setTimeout(() => this.isScrolling = false, 200);
+    });
   }
 
   handleToggle(): void {
-    const currentTime = new Date().getTime();
-    if (currentTime - this.lastTouchTime > this.clickDebounceTime) {
+    if (!this.isScrolling) {
       this.isExpanded = !this.isExpanded;
       this.storeService.toggleItem(this.item.id);
     }
   }
 
   handleItemClick(itemId: string): void {
-    const currentTime = new Date().getTime();
-    if (currentTime - this.lastTouchTime > this.clickDebounceTime) {
-      this.resetViewportAndLoadItem(this.item.id, itemId);
+    if (!this.isScrolling && !this.isResolving) { // Modify this line
+      this.isResolving = true;
+      this.resetViewportAndLoadItem(this.item.id, itemId).then(() => {
+        this.isResolving = false; // Add this line
+      });
       const activeItem = this.storeService.getActiveItem();
       if (activeItem.item?.id !== itemId || activeItem.catalog?.id !== this.item.id) {
         this.storeService.loadItemDetails(this.item.id, itemId);
@@ -82,10 +86,12 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     }
   }
 
-  resetViewportAndLoadItem(catalogId: string, itemId: string): void {
+  async resetViewportAndLoadItem(catalogId: string, itemId: string): Promise<void> {
     // Reset the viewport and load the item simultaneously
-    smoothScrollToTop();
+    await smoothScrollToTop();
+    console.log('smoothScrollToTop');
   }
+
 
   getPreviewImageUrl(url: string): string | undefined {
     const preloadedImage = this.storeService.getPreloadedImage(url);
