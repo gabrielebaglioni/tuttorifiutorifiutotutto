@@ -2,21 +2,21 @@ import {
   Component,
   Input,
   OnInit,
-  computed,
-  effect,
-  inject,
+  OnChanges,
+  AfterViewInit,
+  OnDestroy,
   Injector,
-  runInInjectionContext,
   signal,
-  Signal, OnChanges, AfterViewInit
+  Signal,
+  inject, runInInjectionContext, effect
 } from '@angular/core';
 import { CatalogItem, StoreService } from '../../../../shared/service/store.service';
 import { CommonModule } from '@angular/common';
 import { SelectedImageDisplayComponent } from '../selected-image-display/selected-image-display.component';
 import { ItemPreviewComponent } from '../item-preview/item-preview.component';
-import {debounceTime, fromEvent, map, Observable} from "rxjs";
+import { debounceTime, fromEvent, map, Observable, Subscription } from 'rxjs';
 import { smoothScrollToTop } from '../../../../shared/utils/smoothScrollToTop';
-import {SubscriberComponent} from "../../../../shared/components/subscriber/subscriber.component";
+import { SubscriberComponent } from '../../../../shared/components/subscriber/subscriber.component';
 
 @Component({
   selector: 'app-catalog-item',
@@ -29,22 +29,22 @@ import {SubscriberComponent} from "../../../../shared/components/subscriber/subs
   ],
   styleUrls: ['./catalog-item.component.css']
 })
-export class CatalogItemComponent extends SubscriberComponent implements OnInit,AfterViewInit {
+export class CatalogItemComponent extends SubscriberComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() item!: CatalogItem;
   isExpanded$: Observable<boolean> | undefined;
   isExpanded = false;
   isLoading$: Signal<boolean>;
   private isScrolling = false;
-
   private storeService = inject(StoreService);
   private injector = inject(Injector);
+  private touchMoveSubscription: Subscription | undefined;
+  private touchEndSubscription: Subscription | undefined;
 
   constructor() {
     super();
     runInInjectionContext(this.injector, () => {
       effect(() => {
         if (this.storeService.activeItem().catalog?.id === this.item.id) {
-
         }
       }, { allowSignalWrites: true });
     });
@@ -55,27 +55,35 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit,
     this.isExpanded$ = this.storeService.expandedItems$.pipe(
       map(items => items[this.item.id])
     );
+  }
+
+  ngOnChanges(): void {
+    if (this.storeService.activeItem().catalog?.id === this.item.id) {
+      smoothScrollToTop().then(() => { console.log('smoothScrollToTop On changes') });
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (this.storeService.activeItem().catalog?.id === this.item.id) {
+      smoothScrollToTop().then(() => { console.log('smoothScrollToTop afterviewinit') });
+    }
+
     // Add a listener for the 'touchmove' event
-    fromEvent(document, 'touchmove').subscribe(() => this.isScrolling = true);
+    this.touchMoveSubscription = fromEvent(document, 'touchmove').pipe(
+      debounceTime(200)
+    ).subscribe(() => this.isScrolling = true);
+
     // Add a listener for the 'touchend' event
-    fromEvent(document, 'touchend').subscribe(() => {
+    this.touchEndSubscription = fromEvent(document, 'touchend').subscribe(() => {
       // After a brief delay, set isScrolling to false
       setTimeout(() => this.isScrolling = false, 200);
     });
+
+    this._subscriptions.push(this.touchMoveSubscription, this.touchEndSubscription);
   }
 
-  ngAfterViewInit() {
-    fromEvent(document, 'touchmove').pipe(
-      debounceTime(200) // Ignore events if they are too close together
-    ).subscribe(() => this.isScrolling = true);
-
-    fromEvent(document, 'touchend').pipe(
-      debounceTime(200) // Ignore events if they are too close together
-    ).subscribe(() => this.isScrolling = false);
-
-    if (this.storeService.activeItem().catalog?.id === this.item.id) {
-      smoothScrollToTop().then(() => {console.log('smoothScrollToTop afterviewinit')});
-    }
+  override ngOnDestroy(): void {
+    this._subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   handleToggle(): void {
@@ -86,16 +94,15 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit,
   }
 
   handleItemClick(itemId: string): void {
-      const activeItem = this.storeService.getActiveItem();
-      if (activeItem.item?.id !== itemId) {
-        this.storeService.loadItemDetails(this.item.id, itemId);
-      }else {
-        smoothScrollToTop().then(() => {console.log('smoothScrollToTop activeItem same item')});
-      }
+    const activeItem = this.storeService.getActiveItem();
+    if (activeItem.item?.id !== itemId) {
+      this.storeService.loadItemDetails(this.item.id, itemId);
+      smoothScrollToTop().then(() => { console.log('smoothScrollToTop') });
+
+    } else {
+      smoothScrollToTop().then(() => { console.log('smoothScrollToTop activeItem same item') });
+    }
   }
-
-
-
 
   getPreviewImageUrl(url: string): string | undefined {
     const preloadedImage = this.storeService.getPreloadedImage(url);

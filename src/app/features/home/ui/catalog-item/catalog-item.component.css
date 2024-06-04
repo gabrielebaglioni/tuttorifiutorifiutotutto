@@ -10,7 +10,6 @@ button {
   touch-action: manipulation;
 }
 .catalog-image{
-    pointer-events: all;
     touch-action: manipulation;
 }
 
