@@ -85,6 +85,8 @@ ngAfterViewInit() {
       const activeItem = this.storeService.getActiveItem();
       if (activeItem.item?.id !== itemId || activeItem.catalog?.id !== this.item.id) {
         this.storeService.loadItemDetails(this.item.id, itemId);
+      }else {
+        smoothScrollToTop().then(() => {console.log('smoothScrollToTop activeItem same item')});
       }
   }
 
