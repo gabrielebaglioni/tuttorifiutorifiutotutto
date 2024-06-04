@@ -8,7 +8,7 @@ import {
   Injector,
   runInInjectionContext,
   signal,
-  Signal
+  Signal, OnChanges, AfterViewInit
 } from '@angular/core';
 import { CatalogItem, StoreService } from '../../../../shared/service/store.service';
 import { CommonModule } from '@angular/common';
@@ -29,7 +29,7 @@ import {SubscriberComponent} from "../../../../shared/components/subscriber/subs
   ],
   styleUrls: ['./catalog-item.component.css']
 })
-export class CatalogItemComponent extends SubscriberComponent implements OnInit {
+export class CatalogItemComponent extends SubscriberComponent implements OnInit,OnChanges,AfterViewInit {
   @Input() item!: CatalogItem;
   isExpanded$: Observable<boolean> | undefined;
   isExpanded = false;
@@ -45,6 +45,7 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     runInInjectionContext(this.injector, () => {
       effect(() => {
         if (this.storeService.activeItem().catalog?.id === this.item.id) {
+
         }
       }, { allowSignalWrites: true });
     });
@@ -55,16 +56,24 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     this.isExpanded$ = this.storeService.expandedItems$.pipe(
       map(items => items[this.item.id])
     );
-
     // Add a listener for the 'touchmove' event
     fromEvent(document, 'touchmove').subscribe(() => this.isScrolling = true);
-
     // Add a listener for the 'touchend' event
     fromEvent(document, 'touchend').subscribe(() => {
       // After a brief delay, set isScrolling to false
       setTimeout(() => this.isScrolling = false, 200);
     });
   }
+  ngOnChanges(): void {
+    if (this.storeService.activeItem().catalog?.id === this.item.id) {
+      smoothScrollToTop().then(() => {console.log('smoothScrollToTop On changes')});
+    }
+  }
+ngAfterViewInit() {
+  if (this.storeService.activeItem().catalog?.id === this.item.id) {
+    smoothScrollToTop().then(() => {console.log('smoothScrollToTop afterviewinit')});
+  }
+}
 
   handleToggle(): void {
     if (!this.isScrolling) {

@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { DataService } from './dataService';
 import { BehaviorSubject } from 'rxjs';
 import { PreloadService } from './preload.service';
+import {smoothScrollToTop} from "../utils/smoothScrollToTop";
 
 export interface Item {
   id: string;
@@ -69,6 +70,7 @@ export class StoreService {
       return; // Do not set the active item if it is already active
     }
     this.activeItem.set(activeItem);
+    smoothScrollToTop().then(() => {console.log('smoothScrollToTop activeItem')});
   }
 
   getActiveItem() {
