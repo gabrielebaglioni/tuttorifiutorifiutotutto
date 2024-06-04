@@ -61,7 +61,7 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     this.storeService.toggleItem(this.item.id);
   }
 
-  handleItemClick(itemId: string): void {
+  async handleItemClick(itemId: string): Promise<void> {
     const activeItem = this.storeService.getActiveItem();
     if (activeItem.item?.id === itemId && activeItem.catalog?.id === this.item.id) {
       return; // Do not reload the item if it is already active
@@ -71,9 +71,8 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
 
   resetViewportAndLoadItem(catalogId: string, itemId: string): void {
     // Reset the viewport and load the item simultaneously
-    smoothScrollToTop().finally(() => {
-      this.storeService.loadItemDetails(catalogId, itemId);
-    });
+    smoothScrollToTop();
+    this.storeService.loadItemDetails(catalogId, itemId);
   }
 
   getPreviewImageUrl(url: string): string | undefined {
