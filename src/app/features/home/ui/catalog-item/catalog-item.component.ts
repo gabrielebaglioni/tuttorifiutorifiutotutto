@@ -35,7 +35,6 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit,
   isExpanded = false;
   isLoading$: Signal<boolean>;
   private isScrolling = false;
-  private isResolving = false; // Add this line
 
   private storeService = inject(StoreService);
   private injector = inject(Injector);
@@ -83,23 +82,13 @@ ngAfterViewInit() {
   }
 
   handleItemClick(itemId: string): void {
-    if (!this.isScrolling && !this.isResolving) { // Modify this line
-      this.isResolving = true;
-      this.resetViewportAndLoadItem(this.item.id, itemId).then(() => {
-        this.isResolving = false; // Add this line
-      });
       const activeItem = this.storeService.getActiveItem();
       if (activeItem.item?.id !== itemId || activeItem.catalog?.id !== this.item.id) {
         this.storeService.loadItemDetails(this.item.id, itemId);
       }
-    }
   }
 
-  async resetViewportAndLoadItem(catalogId: string, itemId: string): Promise<void> {
-    // Reset the viewport and load the item simultaneously
-    await smoothScrollToTop();
-    console.log('smoothScrollToTop');
-  }
+
 
 
   getPreviewImageUrl(url: string): string | undefined {

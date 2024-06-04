@@ -67,13 +67,16 @@ export class StoreService {
       currentActiveItem.item?.id === activeItem.item?.id &&
       currentActiveItem.catalog?.id === activeItem.catalog?.id
     ) {
+      smoothScrollToTop().then(() => {console.log('smoothScrollToTop activeItem same item')});
+
       return; // Do not set the active item if it is already active
     }
     this.activeItem.set(activeItem);
-    smoothScrollToTop().then(() => {console.log('smoothScrollToTop activeItem')});
   }
 
   getActiveItem() {
+
+    smoothScrollToTop().then(() => {console.log('smoothScrollToTop activeItem get')});
     return this.activeItem();
   }
 
