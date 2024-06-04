@@ -2,8 +2,13 @@
   display: inline-block;
   margin-right: 1rem;
   cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
-
+button {
+  pointer-events: auto;
+  touch-action: manipulation;
+}
 
 
 /* Stili generali per la transizione */

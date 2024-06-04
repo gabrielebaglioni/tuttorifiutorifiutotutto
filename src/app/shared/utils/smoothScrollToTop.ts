@@ -2,10 +2,14 @@
 export function smoothScrollToTop(): Promise<void> {
   return new Promise<void>((resolve) => {
     const scrollToTop = () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+      if ('scrollBehavior' in document.documentElement.style) {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      } else {
+        window.scrollTo(0, 0);
+      }
     };
 
     const checkIfScrollCompleted = () => {
