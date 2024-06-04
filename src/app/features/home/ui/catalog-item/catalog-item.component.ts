@@ -14,7 +14,7 @@ import { CatalogItem, StoreService } from '../../../../shared/service/store.serv
 import { CommonModule } from '@angular/common';
 import { SelectedImageDisplayComponent } from '../selected-image-display/selected-image-display.component';
 import { ItemPreviewComponent } from '../item-preview/item-preview.component';
-import { map, Observable } from "rxjs";
+import {debounceTime, fromEvent, map, Observable} from "rxjs";
 import { smoothScrollToTop } from '../../../../shared/utils/smoothScrollToTop';
 import {SubscriberComponent} from "../../../../shared/components/subscriber/subscriber.component";
 
@@ -34,7 +34,8 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
   isExpanded$: Observable<boolean> | undefined;
   isExpanded = false;
   isLoading$: Signal<boolean>;
-
+  private clickDebounceTime = 200; // Tempo di ritardo in millisecondi
+  private lastTouchTime = 0;
   private storeService = inject(StoreService);
   private injector = inject(Injector);
 
@@ -54,18 +55,30 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit 
     this.isExpanded$ = this.storeService.expandedItems$.pipe(
       map(items => items[this.item.id])
     );
+
+    // Aggiungi un listener per l'evento 'touchstart'
+    fromEvent(document, 'touchstart').pipe(
+      debounceTime(this.clickDebounceTime),
+      map(() => new Date().getTime())
+    ).subscribe(time => this.lastTouchTime = time);
   }
 
   handleToggle(): void {
-    this.isExpanded = !this.isExpanded;
-    this.storeService.toggleItem(this.item.id);
+    const currentTime = new Date().getTime();
+    if (currentTime - this.lastTouchTime > this.clickDebounceTime) {
+      this.isExpanded = !this.isExpanded;
+      this.storeService.toggleItem(this.item.id);
+    }
   }
 
   handleItemClick(itemId: string): void {
-    this.resetViewportAndLoadItem(this.item.id, itemId);
-    const activeItem = this.storeService.getActiveItem();
-    if (activeItem.item?.id !== itemId || activeItem.catalog?.id !== this.item.id) {
-      this.storeService.loadItemDetails(this.item.id, itemId);
+    const currentTime = new Date().getTime();
+    if (currentTime - this.lastTouchTime > this.clickDebounceTime) {
+      this.resetViewportAndLoadItem(this.item.id, itemId);
+      const activeItem = this.storeService.getActiveItem();
+      if (activeItem.item?.id !== itemId || activeItem.catalog?.id !== this.item.id) {
+        this.storeService.loadItemDetails(this.item.id, itemId);
+      }
     }
   }
 
