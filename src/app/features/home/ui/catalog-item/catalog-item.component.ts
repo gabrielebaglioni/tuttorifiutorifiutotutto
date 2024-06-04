@@ -14,7 +14,7 @@ import { CatalogItem, StoreService } from '../../../../shared/service/store.serv
 import { CommonModule } from '@angular/common';
 import { SelectedImageDisplayComponent } from '../selected-image-display/selected-image-display.component';
 import { ItemPreviewComponent } from '../item-preview/item-preview.component';
-import { debounceTime, fromEvent, map, Observable, Subscription } from 'rxjs';
+import {debounceTime, fromEvent, map, Observable, Subject, Subscription} from 'rxjs';
 import { smoothScrollToTop } from '../../../../shared/utils/smoothScrollToTop';
 import { SubscriberComponent } from '../../../../shared/components/subscriber/subscriber.component';
 
@@ -37,8 +37,12 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit,
   private isScrolling = false;
   private storeService = inject(StoreService);
   private injector = inject(Injector);
+  private touchStartSubscription: Subscription | undefined;
   private touchMoveSubscription: Subscription | undefined;
   private touchEndSubscription: Subscription | undefined;
+  private touchStartY = 0;
+  private isSwipe = false;
+  private itemClickSubject = new Subject<string>();
 
   constructor() {
     super();
@@ -49,6 +53,9 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit,
       }, { allowSignalWrites: true });
     });
     this.isLoading$ = this.storeService.isLoading$();
+    this.itemClickSubject.pipe(
+      debounceTime(100)
+    ).subscribe(itemId => this.executeItemClick(itemId));
   }
 
   ngOnInit(): void {
@@ -68,18 +75,30 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit,
       smoothScrollToTop().then(() => { console.log('smoothScrollToTop afterviewinit') });
     }
 
+    // Add a listener for the 'touchstart' event
+    this.touchStartSubscription = fromEvent<TouchEvent>(document, 'touchstart').subscribe((event: TouchEvent) => {
+      this.touchStartY = event.touches[0].clientY;
+      this.isSwipe = false;
+    });
+
     // Add a listener for the 'touchmove' event
-    this.touchMoveSubscription = fromEvent(document, 'touchmove').pipe(
+    this.touchMoveSubscription = fromEvent<TouchEvent>(document, 'touchmove').pipe(
       debounceTime(200)
-    ).subscribe(() => this.isScrolling = true);
+    ).subscribe((event: TouchEvent) => {
+      const touchEndY = event.touches[0].clientY;
+      const deltaY = Math.abs(touchEndY - this.touchStartY);
+      if (deltaY > 10) { // Threshold for swipe detection
+        this.isSwipe = true;
+      }
+    });
 
     // Add a listener for the 'touchend' event
-    this.touchEndSubscription = fromEvent(document, 'touchend').subscribe(() => {
+    this.touchEndSubscription = fromEvent<TouchEvent>(document, 'touchend').subscribe(() => {
       // After a brief delay, set isScrolling to false
       setTimeout(() => this.isScrolling = false, 200);
     });
 
-    this._subscriptions.push(this.touchMoveSubscription, this.touchEndSubscription);
+    this._subscriptions.push(this.touchStartSubscription, this.touchMoveSubscription, this.touchEndSubscription);
   }
 
   override ngOnDestroy(): void {
@@ -87,20 +106,23 @@ export class CatalogItemComponent extends SubscriberComponent implements OnInit,
   }
 
   handleToggle(): void {
-    if (!this.isScrolling) {
+    if (!this.isScrolling && !this.isSwipe) {
       this.isExpanded = !this.isExpanded;
       this.storeService.toggleItem(this.item.id);
     }
   }
 
   handleItemClick(itemId: string): void {
+    if (!this.isSwipe) {
+      this.itemClickSubject.next(itemId);
+    }
+  }
+
+  private executeItemClick(itemId: string): void {
     const activeItem = this.storeService.getActiveItem();
+    smoothScrollToTop().then(() => { console.log('smoothScrollToTop execute click') });
     if (activeItem.item?.id !== itemId) {
       this.storeService.loadItemDetails(this.item.id, itemId);
-      smoothScrollToTop().then(() => { console.log('smoothScrollToTop') });
-
-    } else {
-      smoothScrollToTop().then(() => { console.log('smoothScrollToTop activeItem same item') });
     }
   }
 

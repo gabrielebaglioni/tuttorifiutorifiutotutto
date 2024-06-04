@@ -74,7 +74,6 @@ export class StoreService {
 
   getActiveItem() {
 
-    smoothScrollToTop().then(() => {console.log('smoothScrollToTop activeItem get')});
     return this.activeItem();
   }
 
