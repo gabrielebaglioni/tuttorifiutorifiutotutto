@@ -7,7 +7,7 @@ import {DataService} from "./shared/service/dataService";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor( private dataService: DataService) {
+  constructor( ) {
   }
 
   ngOnInit(): void {
