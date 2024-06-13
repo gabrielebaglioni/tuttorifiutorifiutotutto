@@ -14,7 +14,7 @@ import { CatalogItem, StoreService } from '../../../../shared/service/store.serv
 import { CommonModule } from '@angular/common';
 import { SelectedImageDisplayComponent } from '../selected-image-display/selected-image-display.component';
 import { ItemPreviewComponent } from '../item-preview/item-preview.component';
-import {debounceTime, fromEvent, map, Observable, Subject, Subscription} from 'rxjs';
+import { debounceTime, fromEvent, map, Observable, Subject, Subscription } from 'rxjs';
 import { smoothScrollToTop } from '../../../../shared/utils/smoothScrollToTop';
 import { SubscriberComponent } from '../../../../shared/components/subscriber/subscriber.component';
 

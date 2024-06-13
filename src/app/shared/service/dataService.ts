@@ -100,7 +100,7 @@ export class DataService {
 
   getCatalogMetadata() {
     return this.catalogData.map(({ id, name, category, year, items }) => ({
-      id, name, category, year, items: items.map(({ id, url, previewUrl }: { id: string; url: string; previewUrl: string }) => ({ id, url, previewUrl }))
+      id, name, category, year, items: items.map(({ id, url, previewUrl }) => ({ id, url, previewUrl }))
     }));
   }
 
@@ -109,13 +109,12 @@ export class DataService {
     return catalog?.items.find((item: any) => item.id === itemId) || null;
   }
 
-  preloadImage(url: string): Promise<void> {
-    return this.preloadService.preload(url).then(() => {
-      this.previewLoadCount.update(count => count + 1);
-    });
+  async preloadImage(url: string): Promise<void> {
+    await this.preloadService.preload(url);
+    this.previewLoadCount.update(count => count + 1);
   }
 
-  preloadImagesForCatalog(catalogId: string): Promise<void> {
+  async preloadImagesForCatalog(catalogId: string): Promise<void> {
     const catalog = this.catalogData.find(catalog => catalog.id === catalogId);
     if (!catalog) return Promise.resolve();
 
@@ -125,10 +124,11 @@ export class DataService {
 
     this.totalPreviewItems.set(previewLoadObservables.length);
 
-    return forkJoin(previewLoadObservables).toPromise().then(() => {
+    try {
+      await forkJoin(previewLoadObservables).toPromise();
       console.log('All preview images preloaded for catalog:', catalogId);
-    }).catch(err => {
+    } catch (err) {
       console.error('Error preloading preview images for catalog:', err);
-    });
+    }
   }
 }

@@ -8,6 +8,7 @@ export class PreloadService {
 
   preload(url: string): Promise<void> {
     if (this.cache.has(url)) {
+      console.log(`Image already cached: ${url}`);
       return Promise.resolve();
     }
 
@@ -21,6 +22,7 @@ export class PreloadService {
       element.src = url;
       element.onload = () => {
         this.cache.set(url, element);
+        console.log(`Image preloaded: ${url}`);
         resolve();
       };
       element.onerror = (event) => {

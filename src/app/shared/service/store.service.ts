@@ -2,7 +2,6 @@ import { Injectable, signal, computed } from '@angular/core';
 import { DataService } from './dataService';
 import { BehaviorSubject } from 'rxjs';
 import { PreloadService } from './preload.service';
-import {smoothScrollToTop} from "../utils/smoothScrollToTop";
 
 export interface Item {
   id: string;
@@ -47,6 +46,14 @@ export class StoreService {
   private loadCatalogMetadata() {
     const metadata = this.dataService.getCatalogMetadata();
     this.catalogItems.set(metadata);
+    this.preloadCatalogs();
+  }
+
+  private async preloadCatalogs() {
+    for (const catalog of this.catalogItems()) {
+      await this.dataService.preloadImagesForCatalog(catalog.id);
+      console.log(`Preloaded images for catalog: ${catalog.id}`);
+    }
   }
 
   loadItemDetails(catalogId: string, itemId: string) {
@@ -73,7 +80,6 @@ export class StoreService {
   }
 
   getActiveItem() {
-
     return this.activeItem();
   }
 
