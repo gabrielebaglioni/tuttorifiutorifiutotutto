@@ -19,7 +19,9 @@ export class ItemPreviewComponent implements OnInit, AfterViewInit {
   constructor(private sanitizer: DomSanitizer, private renderer: Renderer2, private el: ElementRef) {}
 
   ngOnInit(): void {
-    this.safePreviewUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(this.previewUrl));
+    this.convertBase64ToBlobUrl(this.previewUrl).then(blobUrl => {
+      this.safePreviewUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl));
+    });
   }
 
   ngAfterViewInit(): void {
@@ -41,5 +43,10 @@ export class ItemPreviewComponent implements OnInit, AfterViewInit {
 
   onClick(): void {
     this.itemClick.emit(this.itemId); // Emetti l'evento di clic
+  }
+  private async convertBase64ToBlobUrl(base64: string): Promise<string> {
+    const response = await fetch(base64);
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
   }
 }

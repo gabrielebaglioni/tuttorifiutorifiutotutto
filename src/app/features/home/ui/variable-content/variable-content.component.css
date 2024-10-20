@@ -1,0 +1,14 @@
+.fontPKLink {
+  font-family: 'Libre Barcode 128 Text', sans-serif;
+  font-size: 64px;
+}
+
+/* Media query per dispositivi mobili */
+@media (max-width: 1024px) {
+  .fontPKLink {
+    font-size: 45px;
+  }
+}
+.fontSizeComunicationLink{
+  font-size: 11px;
+}

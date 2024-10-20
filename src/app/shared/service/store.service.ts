@@ -1,24 +1,8 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { DataService } from './dataService';
-import { BehaviorSubject } from 'rxjs';
-import { PreloadService } from './preload.service';
-import {smoothScrollToTop} from "../utils/smoothScrollToTop";
-
-export interface Item {
-  id: string;
-  url: string;
-  previewUrl: string;
-  alt?: string;
-  description?: string;
-}
-
-export interface CatalogItem {
-  id: string;
-  name: string;
-  category: string;
-  year: string;
-  items: Item[];
-}
+/*
+import {computed, Injectable, signal} from '@angular/core';
+import {DataService} from './dataService';
+import {CatalogItem, Item, PreloadService} from './preload.service';
+import {BehaviorSubject} from 'rxjs';
 
 export interface ActiveItem {
   item: Item | null;
@@ -44,20 +28,42 @@ export class StoreService {
     this.loadCatalogMetadata();
   }
 
-  private loadCatalogMetadata() {
-    const metadata = this.dataService.getCatalogMetadata();
-    this.catalogItems.set(metadata);
+  private async loadCatalogMetadata() {
+    const metadata = await this.preloadService.getAllCatalogs();
+    if (metadata.length > 0) {
+      this.catalogItems.set(metadata);
+    } else {
+      await this.dataService.syncCatalogs();
+      const newMetadata = this.dataService.getCatalogMetadata();
+      for (const catalog of newMetadata) {
+        await this.preloadService.saveCatalog(catalog);
+      }
+      this.catalogItems.set(newMetadata);
+    }
   }
 
-  loadItemDetails(catalogId: string, itemId: string) {
+  async loadItemDetails(catalogId: string, itemId: string) {
     const item = this.dataService.getItemDetails(catalogId, itemId);
-    const catalogItems = this.catalogItems();
-    const catalog = catalogItems.find(c => c.id === catalogId);
-    if (catalog && item) {
-      const itemIndex = catalog.items.findIndex(i => i.id === itemId);
-      catalog.items = catalog.items.map(i => i.id === itemId ? item : i);
-      this.catalogItems.set(catalogItems);
-      this.setActiveItem({ item, catalog, index: itemIndex });
+    if (item) {
+      const catalogItems = this.catalogItems();
+      const catalog = catalogItems.find(c => c.id === catalogId);
+      if (catalog) {
+        const itemIndex = catalog.items.findIndex(i => i.id === itemId);
+        catalog.items = catalog.items.map(i => i.id === itemId ? item : i);
+        this.catalogItems.set(catalogItems);
+
+        const cachedData = await this.preloadService.getFromCache(item.url);
+        if (cachedData) {
+          this.setActiveItem({ item, catalog, index: itemIndex });
+        } else {
+          const dbData = await this.preloadService.getFromIndexedDB(item.url);
+          if (dbData) {
+            this.setActiveItem({ item, catalog, index: itemIndex });
+          } else {
+            throw new Error('Data not found in cache or IndexedDB');
+          }
+        }
+      }
     }
   }
 
@@ -73,11 +79,10 @@ export class StoreService {
   }
 
   getActiveItem() {
-
     return this.activeItem();
   }
 
-  toggleItem(id: string) {
+  async toggleItem(id: string) {
     const expandedItems = this.expandedItemsSubject.value;
     const isExpanded = !expandedItems[id];
     expandedItems[id] = isExpanded;
@@ -89,11 +94,23 @@ export class StoreService {
     if (isExpanded) {
       const catalog = this.catalogItems().find(catalog => catalog.id === id);
       if (catalog && catalog.items.length > 0) {
-        this.loading.set(true);
-        this.dataService.preloadImagesForCatalog(id).then(() => {
-          this.loadItemDetails(id, catalog.items[0].id);
-          this.loading.set(false);
+        this.setLoading(true);
+
+        // Check if all preview URLs are preloaded
+        const preloadPromises = catalog.items.map(async item => {
+          const cachedData = await this.preloadService.getFromCache(item.previewUrl);
+          return cachedData || await this.preloadService.getFromIndexedDB(item.previewUrl);
         });
+
+        const preloadResults = await Promise.all(preloadPromises);
+        const allPreloaded = preloadResults.every(data => data !== undefined);
+
+        if (!allPreloaded) {
+          await this.dataService.preloadImagesForCatalog(id);
+        }
+
+        await this.loadItemDetails(id, catalog.items[0].id);
+        this.setLoading(false);
       }
     } else {
       const activeItem = this.activeItem();
@@ -111,7 +128,6 @@ export class StoreService {
     if (allExpanded) {
       Object.keys(expandedItems).forEach(key => expandedItems[key] = true);
 
-      // Set the active item to the first item of the first catalog
       const catalogItems = this.catalogItems();
       if (catalogItems.length > 0 && catalogItems[0].items.length > 0) {
         this.setActiveItem({
@@ -120,7 +136,6 @@ export class StoreService {
           index: 0
         });
       }
-
     } else {
       Object.keys(expandedItems).forEach(key => expandedItems[key] = false);
       this.activeItem.set({ item: null, catalog: null, index: null });
@@ -136,11 +151,16 @@ export class StoreService {
     this.activeItem.set({ item: null, catalog: null, index: null });
   }
 
-  getPreloadedImage(url: string): HTMLImageElement | undefined {
-    return this.preloadService.getFromCache(url);
+  async getPreloadedImage(url: string): Promise<string | undefined> {
+    return await this.preloadService.getFromCache(url) || await this.preloadService.getFromIndexedDB(url);
   }
 
   isLoading$() {
     return computed(() => this.loading());
   }
+
+  setLoading(isLoading: boolean) {
+    this.loading.set(isLoading);
+  }
 }
+*/

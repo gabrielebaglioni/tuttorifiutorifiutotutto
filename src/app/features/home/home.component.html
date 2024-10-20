@@ -1,12 +1,13 @@
 <div class="flex flex-wrap">
-  <div class="mb-24 md:mb-4 w-full md:w-6/12 px-6 py-6" (click)="onClickedInside()">
+  <div class="mb-24 md:mb-4 w-full md:w-6/12 px-6 py-6">
     <app-logo [logoUrl]="'assets/img/logo.png'" [altText]="'tutto rifiuto'"></app-logo>
     <div class="image-display">
-      <app-selected-image-display (click)="onClickedInside()"></app-selected-image-display>
+      <app-selected-image-display ></app-selected-image-display>
     </div>
   </div>
   <div class="w-full md:w-6/12">
-    <section class="flex flex-wrap relative md:fixed w-full md:w-2/4 pl-6 md:pl-0 pr-6 py-6 z-10 justify-between pb-2" (click)="onClickedInside()">
+    <img src="assets/banner/FUEGO.jpg">
+<!--    <section class="flex flex-wrap relative md:fixed w-full md:w-2/4 pl-6 md:pl-0 pr-6 py-6 z-10 justify-between pb-2" (click)="onClickedInside()">
       <div><p class="uppercase mb-0 reddit-mono-400">Catalog</p></div>
       <button class="expand-all-btn reddit-mono-400" (click)="toggleAllExpand(); onClickedInside()">
         {{ expandAllText$ | async }}
@@ -21,6 +22,6 @@
           </div>
         </ng-container>
       </div>
-    </section>
+    </section>-->
   </div>
 </div>

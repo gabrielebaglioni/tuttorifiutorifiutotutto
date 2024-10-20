@@ -5,9 +5,7 @@ import { AppComponent } from "./app.component";
 import { CoreModule } from "./core/core.module";
 import { AppRoutingModule } from "./app-routing.module";
 import {RouterModule} from "@angular/router";
-import {PreloadService} from "./shared/service/preload.service";
-import {DataService} from "./shared/service/dataService";
-import {StoreService} from "./shared/service/store.service";
+
 import {FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
 
@@ -22,9 +20,7 @@ import {faDownload} from "@fortawesome/free-solid-svg-icons";
     FontAwesomeModule,
   ],
   providers: [
-    StoreService,
-    DataService,
-    PreloadService
+  
   ],
   bootstrap: [AppComponent],
 })
