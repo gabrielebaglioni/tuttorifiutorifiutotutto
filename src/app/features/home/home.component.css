@@ -4,3 +4,17 @@
   align-items: center;
   justify-content: center;
 }
+
+.minimo-h {
+  min-height: 100vh; /* Imposta l'altezza minima a 100vh */
+}
+
+img {
+  max-height: 100vh; /* Limita l'altezza massima dell'immagine a 100vh */
+}
+/* Media query per schermi più piccoli di 764px */
+@media (max-width: 765px) {
+  img {
+    width: 100%; /* L'immagine occupa tutta la larghezza */
+  }
+}
