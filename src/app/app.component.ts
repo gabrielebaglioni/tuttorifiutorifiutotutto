@@ -9,20 +9,30 @@ import { DataService } from './shared/service/dataService';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor() {}
+  isLoading = true;
 
-  async ngOnInit(): Promise<void> {
-
-  /*  try {
-      // Sincronizza le immagini di anteprima
-      await this.dataService.preloadAllPreviews();
-      console.log('Preview images synchronized and cached.');
-
-      // Carica tutti gli altri tipi di file
-      await this.dataService.preloadAllItems();
-      console.log('All other items synchronized and cached.');
-    } catch (error) {
-      console.error('Error during preload:', error);
-    }*/
+  ngOnInit() {
+    this.checkResourcesLoaded();
   }
+
+  checkResourcesLoaded() {
+    const images = Array.from(document.images);
+    const imagePromises = images.map(img => {
+      return new Promise(resolve => {
+        if (img.complete) {
+          resolve(true);
+        } else {
+          img.addEventListener('load', () => resolve(true));
+          img.addEventListener('error', () => resolve(true));
+        }
+      });
+    });
+
+    const fontPromise = document.fonts.ready;
+
+    Promise.all([...imagePromises, fontPromise]).then(() => {
+      this.isLoading = false;
+    });
+  }
+
 }

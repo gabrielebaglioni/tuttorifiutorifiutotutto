@@ -8,6 +8,7 @@ import {RouterModule} from "@angular/router";
 
 import {FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
+import {FeaturesModule} from "./features/features.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,9 +19,10 @@ import {faDownload} from "@fortawesome/free-solid-svg-icons";
     AppRoutingModule,
     RouterModule,
     FontAwesomeModule,
+    FeaturesModule,
   ],
   providers: [
-  
+
   ],
   bootstrap: [AppComponent],
 })
